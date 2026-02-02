@@ -1,0 +1,21 @@
+{
+  "version": "v1",
+  "packages": {
+    "medusa-faire": {
+      "signature": "3d75a36214a78196d3130e863afa232f",
+      "file": true
+    },
+    "my-plugin": {
+      "signature": "6e1c377c2e6ca6ca38af8b1397540188",
+      "file": true
+    },
+    "@piranha-studios/supplier-management": {
+      "signature": "f3071efaa3dcf48af4a318cbe5710e97",
+      "file": true
+    },
+    "@piranhastudios/supplier-management": {
+      "signature": "2e89b585c78a966cb4f94e49aee1471b",
+      "file": true
+    }
+  }
+}
