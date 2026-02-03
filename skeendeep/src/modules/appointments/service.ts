@@ -8,6 +8,11 @@ class AppointmentModuleService extends MedusaService({
     // Check if appointment exists
     const existing = await this.retrieveAppointment(payload.id).catch(() => null)
 
+    const startDate = new Date(payload.datetime)
+    const durationMinutes = Number(payload.duration) || 0
+    // Calculate end time properly from start + duration
+    const endDate = new Date(startDate.getTime() + durationMinutes * 60000)
+
     const appointmentData = {
       id: payload.id.toString(), // ensure ID is string if it's coming as number
       customer_id: customerId,
@@ -17,10 +22,10 @@ class AppointmentModuleService extends MedusaService({
       phone: payload.phone,
       appointment_type: payload.type,
       appointment_type_id: payload.appointmentTypeID,
-      datetime: new Date(payload.datetime),
-      end_datetime: payload.endTime ? new Date(payload.endTime) : null,
+      datetime: startDate,
+      end_datetime: endDate,
       timezone: payload.timezone,
-      duration_minutes: Number(payload.duration),
+      duration_minutes: durationMinutes,
       price: payload.price,
       paid: payload.paid === "yes" || payload.paid === true,
       amount_paid: payload.amountPaid,
