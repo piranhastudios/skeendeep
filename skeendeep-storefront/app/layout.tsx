@@ -18,8 +18,11 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'NDARA - Shaping Spaces, Not Filling Them',
-  description: 'Where interior design expertise meets ecommerce craft. Curated furniture that honors materiality, proportion, texture, and restraint.',
+  title: {
+    template: '%s | SkeenDeep',
+    default: 'SkeenDeep Medical Aesthetics Clinic | Experts in Non-invasive Aesthetic Dermatology',
+  },
+  description: 'At SkeenDeep Medical Aesthetics Clinic, we offer a wide variety of treatments designed to help you achieve your desired results. Experts in non-invasive aesthetic dermatology.',
   generator: 'v0.app',
   icons: {
     icon: [

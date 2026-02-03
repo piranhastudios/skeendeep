@@ -9,14 +9,14 @@
             "name": "Run frontend",
             "request": "launch",
             "type": "node-terminal",
-            "cwd": "${workspaceFolder}/ndara-storefront"
+            "cwd": "${workspaceFolder}/skeendeep-storefront"
         },
         {
             "command": "pnpm dev",
             "name": "Run backend",
             "request": "launch",
             "type": "node-terminal",
-            "cwd": "${workspaceFolder}/ndara"
+            "cwd": "${workspaceFolder}/skeendeep"
         }
     ]
 }

@@ -9,6 +9,7 @@ import LocalizedClientLink from "@/components/common/localized-client-link"
 import { signOut } from "@/lib/data/customer"
 import { useState, useEffect } from "react"
 import { listOrders } from "@/lib/data/orders"
+import { Calendar } from "@medusajs/icons"
 
 interface AccountDashboardProps {
   customer: HttpTypes.StoreCustomer
@@ -40,6 +41,12 @@ const AccountDashboard = ({ customer }: AccountDashboardProps) => {
       icon: Package,
       description: "Track and manage your orders",
       count: orders.length
+    },
+    {
+      name: "Appointments",
+      href: "/account/appointments",
+      icon: Calendar,
+      description: "Manage your appointments"
     },
     {
       name: "Addresses",

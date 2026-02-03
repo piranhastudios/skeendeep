@@ -21,7 +21,9 @@ const rooms = [
   },
 ]
 
-export function RoomCategoriesSection() {
+import type { SanityDocument } from "next-sanity"
+
+export function RoomCategoriesSection({ homePageData }: { homePageData?: SanityDocument }) {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-6">

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
 import { HttpTypes } from "@medusajs/types"
+import { retrieveCustomer } from "@/lib/data/customer"
 
 export interface User {
   id: string
@@ -43,19 +44,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshAuth = useCallback(async () => {
     try {
-      const response = await fetch('/api/auth/me', {
-        method: 'GET',
-        credentials: 'include',
-      })
+      const data = await retrieveCustomer()
 
-      if (response.ok) {
-        const data = await response.json()
-        if (data.customer) {
-          updateUserState(data.customer)
-        } else {
-          setUser(null)
-          setCustomer(null)
-        }
+      if (data) {
+        updateUserState(data)
       } else {
         setUser(null)
         setCustomer(null)
@@ -102,8 +94,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: result.message || 'Login failed' }
       }
 
-      // Refresh auth state after successful login
-      await refreshAuth()
+      // If login returned customer data directly, use it
+      if (result.customer) {
+        console.log("AuthStore: Login returned customer, updating state.")
+        updateUserState(result.customer)
+      } else {
+        // Fallback to refresh if no customer returned (shouldn't happen with updated API)
+        await refreshAuth()
+      }
 
       return { success: true }
     } catch (error: any) {
@@ -138,8 +136,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: result.message || 'Registration failed' }
       }
 
-      // Refresh auth state after successful registration
-      await refreshAuth()
+      // If registration returned customer data directly, use it
+      if (result.customer) {
+        updateUserState(result.customer)
+      } else {
+        await refreshAuth()
+      }
 
       return { success: true }
     } catch (error: any) {

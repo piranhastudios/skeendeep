@@ -3,8 +3,46 @@ import { Star, Quote } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { client } from "@/lib/sanity/client"
+import { type SanityDocument } from "next-sanity"
+import imageUrlBuilder, { type SanityImageSource } from "@sanity/image-url"
+import { type Metadata } from "next"
 
-const testimonials = [
+export const metadata: Metadata = {
+  title: 'Testimonials',
+  description: 'See what our clients say about SkeenDeep Medical Aesthetics Clinic. We are committed to helping you achieve your cosmetic results.',
+}
+
+const { projectId, dataset } = client.config()
+const urlFor = (source: SanityImageSource) =>
+  projectId && dataset
+    ? imageUrlBuilder({ projectId, dataset }).image(source)
+    : null
+
+const TESTIMONIALS_PAGE_QUERY = `*[_type == "testimonialsPage"] | order(publishedAt desc)[0]{
+  _id,
+  title,
+  headerDescription,
+  stats[]{
+    value,
+    label
+  },
+  testimonials[]{
+    name,
+    role,
+    location,
+    rating,
+    text,
+    image,
+    featured
+  },
+  ctaTitle,
+  ctaDescription
+}`
+
+const options = { next: { revalidate: 30 } }
+
+const defaultTestimonials = [
   {
     id: 1,
     name: "Amara Osei",
@@ -67,16 +105,34 @@ const testimonials = [
   },
 ]
 
-const stats = [
+const defaultStats = [
   { value: "4.9", label: "Average Rating" },
   { value: "5000+", label: "Happy Customers" },
   { value: "98%", label: "Would Recommend" },
   { value: "12", label: "Countries" },
 ]
 
-export default function TestimonialsPage() {
-  const featuredTestimonials = testimonials.filter(t => t.featured)
-  const regularTestimonials = testimonials.filter(t => !t.featured)
+export default async function TestimonialsPage() {
+  const pageData = await client.fetch<SanityDocument>(
+    TESTIMONIALS_PAGE_QUERY,
+    {},
+    options
+  )
+
+  const testimonials = pageData?.testimonials?.map((testimonial: any, index: number) => ({
+    ...testimonial,
+    id: index + 1,
+    image: testimonial.image ? urlFor(testimonial.image)?.width(200).height(200).url() : null,
+  })) || defaultTestimonials
+
+  const stats = pageData?.stats || defaultStats
+  const pageTitle = pageData?.title || "Testimonials"
+  const headerDescription = pageData?.headerDescription || "Hear from our customers about their experience with NDARA and how our furniture has transformed their spaces."
+  const ctaTitle = pageData?.ctaTitle || "Join Our Community"
+  const ctaDescription = pageData?.ctaDescription || "Become part of the NDARA family. Share your experience and inspire others to create beautiful living spaces."
+
+  const featuredTestimonials = testimonials.filter((t: any) => t.featured)
+  const regularTestimonials = testimonials.filter((t: any) => !t.featured)
 
   return (
     <>      
@@ -84,10 +140,10 @@ export default function TestimonialsPage() {
       <section className="bg-secondary py-16 md:py-24">
         <div className="container mx-auto px-6">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-foreground tracking-tight text-center">
-            Testimonials
+            {pageTitle}
           </h1>
           <p className="mt-4 text-muted-foreground text-center max-w-2xl mx-auto">
-            Hear from our customers about their experience with NDARA and how our furniture has transformed their spaces.
+            {headerDescription}
           </p>
         </div>
       </section>
@@ -96,7 +152,7 @@ export default function TestimonialsPage() {
       <section className="py-12 border-b border-border">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat) => (
+            {stats.map((stat: any) => (
               <div key={stat.label} className="text-center">
                 <span className="font-serif text-3xl md:text-4xl font-medium text-foreground">
                   {stat.value}
@@ -116,7 +172,7 @@ export default function TestimonialsPage() {
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8">
-            {featuredTestimonials.map((testimonial) => (
+            {featuredTestimonials.map((testimonial: any) => (
               <FeaturedTestimonialCard key={testimonial.id} testimonial={testimonial} />
             ))}
           </div>
@@ -131,7 +187,7 @@ export default function TestimonialsPage() {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-8">
-            {regularTestimonials.map((testimonial) => (
+            {regularTestimonials.map((testimonial: any) => (
               <TestimonialCard key={testimonial.id} testimonial={testimonial} />
             ))}
           </div>
@@ -143,10 +199,10 @@ export default function TestimonialsPage() {
         <div className="container mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground tracking-tight">
-              Join Our Community
+              {ctaTitle}
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Become part of the NDARA family. Share your experience and inspire others to create beautiful living spaces.
+              {ctaDescription}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <a 
@@ -170,7 +226,7 @@ export default function TestimonialsPage() {
   )
 }
 
-function FeaturedTestimonialCard({ testimonial }: { testimonial: typeof testimonials[0] }) {
+function FeaturedTestimonialCard({ testimonial }: { testimonial: any }) {
   return (
     <div className="bg-card border border-border rounded-xl p-8 relative">
       <Quote className="w-10 h-10 text-accent/20 absolute top-6 right-6" />
@@ -211,7 +267,7 @@ function FeaturedTestimonialCard({ testimonial }: { testimonial: typeof testimon
   )
 }
 
-function TestimonialCard({ testimonial }: { testimonial: typeof testimonials[0] }) {
+function TestimonialCard({ testimonial }: { testimonial: any }) {
   return (
     <div className="bg-background rounded-xl p-8 flex gap-6">
       <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0">

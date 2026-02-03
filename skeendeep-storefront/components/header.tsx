@@ -17,7 +17,7 @@ const navLinks = [
   { name: "Products", href: "/products" },
   { name: "Services", href: "/services" },
   { name: "About Us", href: "/about" },
-  { name: "Testimonials.", href: "/testimonials" },
+  { name: "Testimonials", href: "/testimonials" },
 ]
 
 export function Header() {
@@ -183,7 +183,7 @@ export function Header() {
             <div className="absolute left-1/2 -translate-x-1/2">
               <Link href="/" className="flex items-center">
                 <Image
-                  src="/images/ndara-logo.svg"
+                  src="/images/logo.svg"
                   alt="NDARA"
                   width={120}
                   height={48}
@@ -212,13 +212,12 @@ export function Header() {
             {/* Logo - sits directly on hero */}
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/ndara-logo.png"
+                src="/images/logo.svg"
                 alt="NDARA"
                 width={100}
                 height={100}
                 className="h-11 w-auto"
               />
-              NDARA
             </Link>
 
             {/* Desktop Navigation - Centered under the white tab */}
@@ -237,6 +236,14 @@ export function Header() {
 
             {/* Right Icons - sits directly on hero */}
             <div className="flex items-center gap-1">
+              <LocalizedClientLink href="/book">
+                <Button
+                  size={"sm"}
+                  className="hover:cursor-pointer rounded-full"
+                >
+                  Book an Appointment
+                </Button>
+              </LocalizedClientLink>
               {/* Search Button */}
               <Button 
                 variant="ghost" 
