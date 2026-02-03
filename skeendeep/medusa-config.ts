@@ -4,11 +4,11 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 module.exports = defineConfig({
   // comment out to enable the admin interface on localhost
-  //  admin: {
-  //   disable: process.env.ADMIN_DISABLED === "true" || false,
-  //   backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
-  //   path: `/`,
-  // },
+   admin: {
+    disable: process.env.ADMIN_DISABLED === "true" || false,
+    backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
+    path: `/`,
+  },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     http: {
