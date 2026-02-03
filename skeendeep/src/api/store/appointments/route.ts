@@ -1,8 +1,8 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { APPOINTMENT_MODULE } from "../../../modules/appointments"
 import AppointmentModuleService from "../../../modules/appointments/service"
 
-export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
+export const GET = async (req: AuthenticatedMedusaRequest, res: MedusaResponse) => {
   // Medusa v2 Auth Context
   const { actor_id, actor_type } = req.auth_context || {}
 
