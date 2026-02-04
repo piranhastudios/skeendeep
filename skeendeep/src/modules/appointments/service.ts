@@ -13,6 +13,11 @@ class AppointmentModuleService extends MedusaService({
     // Calculate end time properly from start + duration
     const endDate = new Date(startDate.getTime() + durationMinutes * 60000)
 
+    // Ensure valid dates
+    if (isNaN(startDate.getTime())) {
+        throw new Error(`Invalid datetime: ${payload.datetime}`)
+    }
+
     const appointmentData = {
       id: payload.id.toString(), // ensure ID is string if it's coming as number
       customer_id: customerId,
@@ -22,8 +27,8 @@ class AppointmentModuleService extends MedusaService({
       phone: payload.phone,
       appointment_type: payload.type,
       appointment_type_id: payload.appointmentTypeID,
-      datetime: startDate,
-      end_datetime: endDate,
+      datetime: startDate, // Pass as Date object
+      end_datetime: endDate, // Pass as Date object
       timezone: payload.timezone,
       duration_minutes: durationMinutes,
       price: payload.price,
@@ -36,9 +41,9 @@ class AppointmentModuleService extends MedusaService({
       location: payload.location,
       notes: payload.notes,
       confirmation_page: payload.confirmationPage,
-      forms: payload.forms,
-      labels: payload.labels,
-      addon_ids: payload.addonIDs,
+      forms: payload.forms || [], // Ensure it's defined
+      labels: payload.labels || {},
+      addon_ids: payload.addonIDs || [],
       raw_payload: payload,
     }
 

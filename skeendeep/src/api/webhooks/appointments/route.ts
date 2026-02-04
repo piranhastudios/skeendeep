@@ -7,19 +7,8 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   const appointmentService: AppointmentModuleService = req.scope.resolve(APPOINTMENT_MODULE)
   const customerService = req.scope.resolve(Modules.CUSTOMER)
 
-  const payload = req.body
-
-  if (!Array.isArray(payload)) {
-    // If it's a single object (from common webhook tools), wrap it
-    // But user code check for array. Let's support both or just array as requested.
-    // User request: "if (!Array.isArray(payload)) return 400"
-    // I will stick to that but also handle single object if Make.com sends one.
-    // Actually, usually webhooks send one event. But the user specifically asked for array iteration.
-    // I will follow the user's code structure.
-     if (!Array.isArray(payload)) {
-         return res.status(400).json({ message: "Expected array of appointments" })
-     }
-  }
+  // Normalize payload to array to allow single object or array
+  const payload = Array.isArray(req.body) ? req.body : [req.body]
 
   const results: any[] = []
 
