@@ -20,9 +20,10 @@ class AppointmentModuleService extends MedusaService({
 
     const appointmentData = {
       id: payload.id.toString(), // ensure ID is string if it's coming as number
-      customer_id: customerId,
-      first_name: payload.firstName,
-      last_name: payload.lastName,
+      
+      // Handle naming discrepancies or missing fields
+      first_name: payload.firstName || "Unknown",
+      last_name: payload.lastName || "Unknown",
       email: payload.email,
       phone: payload.phone,
       appointment_type: payload.type,
