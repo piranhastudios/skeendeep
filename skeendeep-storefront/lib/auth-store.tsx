@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
 import { HttpTypes } from "@medusajs/types"
 import { retrieveCustomer } from "@/lib/data/customer"
+import { sdk } from "./config"
 
 export interface User {
   id: string
@@ -18,7 +19,7 @@ interface AuthContextType {
   customer: HttpTypes.StoreCustomer | null
   isAuthenticated: boolean
   loading: boolean
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  login: (email: string | null, password: string | null, type?: string) => Promise<{ success: boolean; error?: string }>
   register: (firstName: string, lastName: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
   refreshAuth: () => Promise<void>
@@ -71,25 +72,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false)
       }
     }
-    
+
     checkAuth()
   }, [refreshAuth])
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = useCallback(async (email: string | null, password: string | null, type?: string) => {
     try {
+      let response
       setLoading(true)
-      
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      })
+
+      if (type === "google") {
+        const result = await sdk.auth.login("customer", "google", {})
+        
+        if (typeof result === "object" && result.location) {
+          // redirect to Google for authentication
+          window.location.href = result.location
+          return { success: true }
+        }
+        
+        if (typeof result !== "string") {
+          // result failed, show an error
+          return { success: false, error: "Authentication failed" }
+        }
+
+        // Customer was previously authenticated
+        await refreshAuth()
+        return { success: true }
+      } else {
+        response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ email, password }),
+        })
+      }
 
       const result = await response.json()
-      
+
       if (!response.ok) {
         return { success: false, error: result.message || 'Login failed' }
       }
@@ -122,16 +143,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           first_name: firstName,
           last_name: lastName,
-          email, 
-          password 
+          email,
+          password
         }),
       })
 
       const result = await response.json()
-      
+
       if (!response.ok) {
         return { success: false, error: result.message || 'Registration failed' }
       }
@@ -158,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         credentials: 'include',
       })
-      
+
       setUser(null)
       setCustomer(null)
     } catch (error) {

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Save, LogOut } from "lucide-react"
+import { ArrowLeft, Save, LogOut, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,33 +11,64 @@ import { Switch } from "@/components/ui/switch"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { useAuth } from "@/lib/auth-store"
+import { updateCustomer } from "@/lib/data/customer"
+import { useToast } from "@/hooks/use-toast"
 
 export default function SettingsPage() {
-  const { user, isAuthenticated, logout } = useAuth()
+  const { user, customer, isAuthenticated, logout, refreshAuth } = useAuth()
   const router = useRouter()
+  const { toast } = useToast()
   
-  const [name, setName] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [marketingEmails, setMarketingEmails] = useState(false)
   const [orderUpdates, setOrderUpdates] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/auth")
-    } else if (user) {
-      setName(user.name)
-      setEmail(user.email)
+    } else if (customer) {
+      setFirstName(customer.first_name || "")
+      setLastName(customer.last_name || "")
+      setEmail(customer.email || "")
+      setPhone(customer.phone || "")
     }
-  }, [isAuthenticated, router, user])
+  }, [isAuthenticated, router, customer])
 
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated || !customer) {
     return null
   }
 
-  const handleSave = () => {
-    // Mock save - in production this would call an API
-    alert("Settings saved successfully!")
+  const handleSave = async () => {
+    setIsSaving(true)
+    try {
+      await updateCustomer({
+        first_name: firstName,
+        last_name: lastName,
+        phone: phone || undefined,
+      })
+      
+      // Refresh auth state to get updated customer data
+      await refreshAuth()
+      
+      toast({
+        title: "Settings saved",
+        description: "Your profile has been updated successfully.",
+      })
+    } catch (error) {
+      console.error("Error saving settings:", error)
+      toast({
+        title: "Error",
+        description: "Failed to save settings. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleLogout = () => {
@@ -68,14 +99,25 @@ export default function SettingsPage() {
               <h2 className="text-lg font-semibold text-foreground mb-6">Profile Information</h2>
               
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="h-12"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="h-12"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="h-12"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -84,7 +126,20 @@ export default function SettingsPage() {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    disabled
+                    className="h-12 bg-muted"
+                  />
+                  <p className="text-xs text-muted-foreground">Email cannot be changed</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Enter phone number"
                     className="h-12"
                   />
                 </div>
@@ -178,10 +233,15 @@ export default function SettingsPage() {
             <div className="flex gap-4">
               <Button 
                 onClick={handleSave}
+                disabled={isSaving}
                 className="rounded-full bg-foreground text-background hover:bg-foreground/90"
               >
-                <Save className="w-4 h-4 mr-2" />
-                Save Changes
+                {isSaving ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4 mr-2" />
+                )}
+                {isSaving ? "Saving..." : "Save Changes"}
               </Button>
               <Button 
                 variant="outline"
