@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order Confirmation - Skeendeep</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #F3ECE6;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  table {
+    border-spacing: 0;
+  }
+
+  img {
+    border: 0;
+    display: block;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #FFFFFF;
+  }
+
+  .button {
+    background-color: #A7856F;
+    color: #FFFFFF !important;
+    text-decoration: none;
+    padding: 14px 28px;
+    display: inline-block;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .divider {
+    height: 1px;
+    background-color: #E5D8CF;
+  }
+
+  .small-text {
+    font-size: 12px;
+    color: #8A7A72;
+  }
+
+  @media screen and (max-width: 600px) {
+    .padding {
+      padding: 20px !important;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<table width="100%">
+<tr>
+<td align="center">
+
+<table class="container" width="600">
+
+<!-- Header -->
+<tr>
+<td align="center" style="padding: 30px;">
+    <img src="https://edzvbldhjtahfxzruynw.supabase.co/storage/v1/object/public/user_stores/b3b089cf-222e-4f08-8b4b-07ebe3c18a70/images/logo.png" alt="Skeendeep Logo" width="150" style="margin-bottom: 20px;">
+</td>
+</tr>
+
+<!-- Confirmation Section -->
+<tr>
+<td style="padding:40px;" class="padding">
+  <h2 style="margin:0 0 15px 0; font-size:24px; color:#4A3A32;">
+    Thank you for your order
+  </h2>
+
+  <p style="margin:0 0 20px 0; color:#4A3A32; line-height:1.6;">
+    Hi {{customer_name}},
+    <br><br>
+    We’ve received your order and it’s now being prepared with care.
+    Below are your order details.
+  </p>
+
+  <p style="margin:0 0 10px 0; color:#4A3A32;">
+    <strong>Order Number:</strong> {{order_number}}<br>
+    <strong>Order Date:</strong> {{order_date}}
+  </p>
+</td>
+</tr>
+
+<tr>
+<td><div class="divider"></div></td>
+</tr>
+
+<!-- Order Summary -->
+<tr>
+<td style="padding:40px;" class="padding">
+  <h3 style="margin:0 0 20px 0; color:#A7856F;">
+    Order Summary
+  </h3>
+
+  <!-- Repeat for each product -->
+  <p style="margin:0 0 10px 0; color:#4A3A32;">
+    {{product_name}} × {{quantity}} — £{{price}}
+  </p>
+
+  <div class="divider" style="margin:20px 0;"></div>
+
+  <p style="margin:0; color:#4A3A32;">
+    <strong>Total: £{{order_total}}</strong>
+  </p>
+</td>
+</tr>
+
+<tr>
+<td><div class="divider"></div></td>
+</tr>
+
+<!-- Shipping Info -->
+<tr>
+<td style="padding:40px;" class="padding">
+  <h3 style="margin:0 0 15px 0; color:#A7856F;">
+    Delivery Information
+  </h3>
+
+  <p style="margin:0 0 20px 0; color:#4A3A32; line-height:1.6;">
+    {{shipping_address}}
+  </p>
+
+  <p style="margin:0 0 20px 0; color:#4A3A32;">
+    Estimated delivery: {{delivery_estimate}}
+  </p>
+
+  <a href="{{order_tracking_link}}" class="button">
+    Track Your Order
+  </a>
+</td>
+</tr>
+
+<tr>
+<td><div class="divider"></div></td>
+</tr>
+
+<!-- Footer -->
+<tr>
+<td style="padding:30px; text-align:center;" class="small-text">
+  If you have any questions, reply to this email or contact us at  
+  <a href="mailto:info@skeendeep.com" style="color:#A7856F; text-decoration:none;">
+    info@skeendeep.com
+  </a>
+  <br><br>
+  © {{year}} Skeendeep. All rights reserved.
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

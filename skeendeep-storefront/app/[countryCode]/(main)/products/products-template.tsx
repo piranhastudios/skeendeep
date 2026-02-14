@@ -10,10 +10,12 @@ import { Footer } from "@/components/footer"
 import { HttpTypes } from "@medusajs/types"
 import { convertToLocale } from "@/lib/util/money"
 import LocalizedClientLink from "@/components/common/localized-client-link"
-import { listProducts } from "@/lib/data/products"
+import { listProductsWithSort } from "@/lib/data/products"
 import { listCollections } from "@/lib/data/collections"
 import { getRegion } from "@/lib/data/regions"
 import { useCart } from "@/lib/cart-store"
+import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
+import { Spinner } from "@/components/ui/spinner"
 
 type ProductsTemplateProps = {
   sortBy?: string
@@ -36,7 +38,7 @@ export default function ProductsTemplate({
   const [activeCollection, setActiveCollection] = useState(category || "all")
   const [showFilters, setShowFilters] = useState(false)
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000])
-  const [sortOrder, setSortOrder] = useState(sortBy || "name")
+  const [sortOrder, setSortOrder] = useState<SortOptions>((sortBy as SortOptions) || "name")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,16 +47,12 @@ export default function ProductsTemplate({
         const [regionData, collectionsData, productsData] = await Promise.all([
           getRegion(countryCode),
           listCollections({ limit: "100" }),
-          listProducts({
+          listProductsWithSort({
             countryCode,
+            sortBy: sortOrder,
             queryParams: {
               limit: 50,
               ...(activeCollection !== "all" && { collection_id: [activeCollection] }),
-              ...(sortOrder && sortOrder !== "name" && { 
-                order: sortOrder === "price-asc" ? "variants.calculated_price.calculated_amount" : 
-                       sortOrder === "price-desc" ? "-variants.calculated_price.calculated_amount" :
-                       sortOrder === "newest" ? "-created_at" : "title"
-              }),
             },
           }),
         ])
@@ -77,7 +75,7 @@ export default function ProductsTemplate({
   }
 
   const handleSortChange = (newSort: string) => {
-    setSortOrder(newSort)
+    setSortOrder(newSort as SortOptions)
   }
 
   const clearFilters = () => {
@@ -86,13 +84,24 @@ export default function ProductsTemplate({
     setPriceRange([0, 10000])
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <Spinner />
+        </div>
+      </div>
+    )
+  }
+  
   if (!region) {
     return null
   }
 
+
   return (
     <div className="min-h-screen bg-background">
-      
+
       {/* Page Header */}
       <section className="bg-secondary py-16 md:py-24">
         <div className="container mx-auto px-6">
@@ -145,9 +154,9 @@ export default function ProductsTemplate({
 
               {/* View Toggle & Filter */}
               <div className="flex items-center gap-3">
-                <Button 
-                  variant="outline" 
-                  size="icon" 
+                <Button
+                  variant="outline"
+                  size="icon"
                   className="rounded-full border-foreground/20 bg-transparent"
                   onClick={() => setShowFilters(!showFilters)}
                 >
@@ -184,9 +193,9 @@ export default function ProductsTemplate({
                     <div className="flex flex-wrap gap-2">
                       {[
                         { value: "name", label: "Name" },
-                        { value: "price-asc", label: "Price: Low to High" },
-                        { value: "price-desc", label: "Price: High to Low" },
-                        { value: "newest", label: "Newest" },
+                        { value: "price_asc", label: "Price: Low to High" },
+                        { value: "price_desc", label: "Price: High to Low" },
+                        { value: "created_at", label: "Newest" },
                       ].map((option) => (
                         <Button
                           key={option.value}
@@ -240,8 +249,8 @@ export default function ProductsTemplate({
           ) : products.length > 0 ? (
             <div className={cn(
               "grid gap-8",
-              viewMode === "grid" 
-                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" 
+              viewMode === "grid"
+                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
                 : "grid-cols-1"
             )}>
               {products.map((product) => (
@@ -256,15 +265,15 @@ export default function ProductsTemplate({
         </div>
       </section>
 
-          </div>
+    </div>
   )
 }
 
-function ProductCard({ 
-  product, 
-  viewMode, 
-  region 
-}: { 
+function ProductCard({
+  product,
+  viewMode,
+  region
+}: {
   product: HttpTypes.StoreProduct
   viewMode: "grid" | "list"
   region: HttpTypes.StoreRegion
@@ -274,7 +283,7 @@ function ProductCard({
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    
+
     // Get the first available variant
     const variant = product.variants?.[0]
     if (!variant) return
@@ -301,13 +310,13 @@ function ProductCard({
           </div>
           <div className="flex items-center justify-between">
             <span className="font-semibold text-xl text-foreground">
-              {product.variants && 
-               product.variants.length > 0 && 
-               product.variants[0]?.calculated_price?.calculated_amount
+              {product.variants &&
+                product.variants.length > 0 &&
+                product.variants[0]?.calculated_price?.calculated_amount
                 ? convertToLocale({
-                    amount: product.variants[0].calculated_price.calculated_amount,
-                    currency_code: product.variants[0].calculated_price.currency_code || region.currency_code,
-                  })
+                  amount: product.variants[0].calculated_price.calculated_amount,
+                  currency_code: product.variants[0].calculated_price.currency_code || region.currency_code,
+                })
                 : 'Price unavailable'
               }
             </span>
@@ -329,7 +338,7 @@ function ProductCard({
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <button 
+        <button
           className="absolute top-4 right-4 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
           aria-label="Add to wishlist"
           onClick={(e) => e.preventDefault()}
@@ -344,13 +353,13 @@ function ProductCard({
         <div className="flex items-center justify-between mb-2 mt-1">
           <h3 className="font-medium text-sm text-foreground tracking-wide">{product.title}</h3>
           <span className="font-semibold text-foreground">
-            {product.variants && 
-             product.variants.length > 0 && 
-             product.variants[0]?.calculated_price?.calculated_amount
+            {product.variants &&
+              product.variants.length > 0 &&
+              product.variants[0]?.calculated_price?.calculated_amount
               ? convertToLocale({
-                  amount: product.variants[0].calculated_price.calculated_amount,
-                  currency_code: product.variants[0].calculated_price.currency_code || region.currency_code,
-                })
+                amount: product.variants[0].calculated_price.calculated_amount,
+                currency_code: product.variants[0].calculated_price.currency_code || region.currency_code,
+              })
               : 'Price unavailable'
             }
           </span>

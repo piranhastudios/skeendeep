@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
@@ -26,10 +26,14 @@ export function Header() {
   const [searchQuery, setSearchQuery] = useState("")
   const [cartHovered, setCartHovered] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
+  const [tabPath, setTabPath] = useState("")
   
   const searchInputRef = useRef<HTMLInputElement>(null)
   const cartTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const accountTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const navLinksRef = useRef<HTMLDivElement>(null)
+  const mobileLogoRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
   
   const pathname = usePathname()
   const router = useRouter()
@@ -40,6 +44,71 @@ export function Header() {
     if (href === "/") return pathname === "/"
     return pathname.startsWith(href)
   }
+
+  // Calculate dynamic tab path based on nav links width
+  const updateTabPath = useCallback(() => {
+    if (!headerRef.current) return
+    
+    const headerRect = headerRef.current.getBoundingClientRect()
+    const headerWidth = headerRect.width
+    const isMobile = headerWidth < 768
+    
+    // Get the appropriate element for measurement
+    const targetRef = isMobile ? mobileLogoRef.current : navLinksRef.current
+    if (!targetRef) return
+    
+    const targetRect = targetRef.getBoundingClientRect()
+    
+    // Get the target position relative to header
+    const targetCenter = (targetRect.left + targetRect.right) / 2 - headerRect.left
+    const targetHalfWidth = targetRect.width / 2
+    
+    // Adjust padding and curve based on screen size
+    const padding = isMobile ? 30 : 40
+    const curveWidth = isMobile ? 40 : 60
+    const tabHeight = isMobile ? 60 : 52
+    const topOffset = 8
+    const midHeight = isMobile ? 24 : 28
+    
+    // Calculate key points for the swooping curve
+    const tabLeft = targetCenter - targetHalfWidth - padding
+    const tabRight = targetCenter + targetHalfWidth + padding
+    const swoopLeftStart = tabLeft - curveWidth
+    const swoopRightEnd = tabRight + curveWidth
+    
+    // Create smooth swooping curved path using cubic Bézier curves
+    const path = `
+      M0,0 
+      L0,${topOffset} 
+      L${swoopLeftStart},${topOffset}
+      C${swoopLeftStart + 20},${topOffset} ${tabLeft - 20},${topOffset + 2} ${tabLeft},${midHeight}
+      C${tabLeft + 15},${midHeight + 14} ${tabLeft + 15},${tabHeight} ${tabLeft + 50},${tabHeight}
+      L${tabRight - 50},${tabHeight}
+      C${tabRight - 15},${tabHeight} ${tabRight - 15},${midHeight + 14} ${tabRight},${midHeight}
+      C${tabRight + 20},${topOffset + 2} ${swoopRightEnd - 20},${topOffset} ${swoopRightEnd},${topOffset}
+      L${headerWidth},${topOffset} 
+      L${headerWidth},0 
+      Z
+    `
+    
+    setTabPath(path)
+  }, [])
+
+  // Update tab path on mount and resize
+  useEffect(() => {
+    // Small delay to ensure DOM is fully rendered
+    const timeoutId = setTimeout(updateTabPath, 50)
+    
+    const handleResize = () => {
+      updateTabPath()
+    }
+    
+    window.addEventListener("resize", handleResize)
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [updateTabPath])
 
   // Focus search input when opened
   useEffect(() => {
@@ -106,81 +175,25 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 left-0 right-0 z-50">
-        {/* Mobile: Smaller curved tab */}
-        <svg 
-          className="absolute inset-x-0 top-0 w-full md:hidden pointer-events-none"
-          viewBox="0 0 390 70"
-          preserveAspectRatio="none"
-          fill="white"
-          style={{ height: '70px' }}
-        >
-          <path d="
-            M0,0 
-            L0,8 
-            L30,8
-            C45,8 65,14 85,25
-            C105,36 125,52 195,52
-            L195,52
-            C265,52 285,36 305,25
-            C325,14 345,8 360,8
-            L390,8 
-            L390,0 
-            Z
-          " />
-        </svg>
-
-        {/* Desktop/Tablet: Curved tab - responsive sizing */}
-        <svg 
-          className="absolute inset-x-0 top-0 w-full hidden md:block lg:hidden pointer-events-none"
-          viewBox="0 0 1440 56"
-          preserveAspectRatio="none"
-          fill="white"
-          style={{ height: '56px' }}
-        >
-          <path d="
-            M0,0 
-            L0,8 
-            L180,8
-            C220,8 240,10 260,28
-            C280,46 300,52 340,52
-            L1100,52
-            C1140,52 1160,46 1180,28
-            C1200,10 1220,8 1260,8
-            L1440,8 
-            L1440,0 
-            Z
-          " />
-        </svg>
-
-        {/* Large Desktop: Narrower curved tab */}
-        <svg 
-          className="absolute inset-x-0 top-0 w-full hidden lg:block pointer-events-none"
-          viewBox="0 0 1440 56"
-          preserveAspectRatio="none"
-          fill="white"
-          style={{ height: '56px' }}
-        >
-          <path d="
-            M0,0 
-            L0,8 
-            L340,8
-            C380,8 400,10 420,28
-            C440,46 460,52 500,52
-            L940,52
-            C980,52 1000,46 1020,28
-            C1040,10 1060,8 1100,8
-            L1440,8 
-            L1440,0 
-            Z
-          " />
-        </svg>
+      <header ref={headerRef} className="sticky top-0 left-0 right-0 z-50">
+        {/* Dynamic curved tab that wraps content - works for both mobile and desktop */}
+        {tabPath && (
+          <svg 
+            className="absolute inset-x-0 top-0 w-full pointer-events-none"
+            viewBox={`0 0 ${headerRef.current?.getBoundingClientRect().width || 1440} ${headerRef.current && headerRef.current.getBoundingClientRect().width < 768 ? 70 : 56}`}
+            preserveAspectRatio="none"
+            fill="white"
+            style={{ height: headerRef.current && headerRef.current.getBoundingClientRect().width < 768 ? '70px' : '56px' }}
+          >
+            <path d={tabPath} />
+          </svg>
+        )}
 
         <div className="mx-auto max-w-7xl px-4 md:px-6 pt-3 md:pt-4">
           {/* Mobile Navigation */}
           <nav className="flex md:hidden items-center justify-between relative">
             {/* Centered Logo on mobile */}
-            <div className="absolute left-1/2 -translate-x-1/2">
+            <div ref={mobileLogoRef} className="absolute left-1/2 -translate-x-1/2">
               <Link href="/" className="flex items-center">
                 <Image
                   src="/images/logo.svg"
@@ -208,7 +221,7 @@ export function Header() {
           </nav>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center justify-between relative">
+          <nav className="hidden md:flex justify-between relative">
             {/* Logo - sits directly on hero */}
             <Link href="/" className="flex items-center">
               <Image
@@ -221,7 +234,7 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation - Centered under the white tab */}
-            <div className="flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            <div ref={navLinksRef} className="flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
               {navLinks.map((link) => (
                 <LocalizedClientLink key={link.name} href={link.href} className={`text-sm transition-colors whitespace-nowrap ${
                       isActive(link.href) 
@@ -236,24 +249,24 @@ export function Header() {
 
             {/* Right Icons - sits directly on hero */}
             <div className="flex items-center gap-1">
-              <LocalizedClientLink href="/book">
-                <Button
-                  size={"sm"}
-                  className="hover:cursor-pointer rounded-full"
+                <LocalizedClientLink href="/book" className="hidden min-[1110px]:block">
+                  <Button
+                    size={"sm"}
+                    className="hover:cursor-pointer rounded-full"
+                  >
+                    Book an Appointment
+                  </Button>
+                </LocalizedClientLink>
+                {/* Search Button */}
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="text-foreground/70 hover:text-foreground hover:bg-transparent"
+                  onClick={() => setSearchOpen(true)}
                 >
-                  Book an Appointment
+                  <Search className="h-5 w-5" strokeWidth={1.5} />
+                  <span className="sr-only">Search</span>
                 </Button>
-              </LocalizedClientLink>
-              {/* Search Button */}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-foreground/70 hover:text-foreground hover:bg-transparent"
-                onClick={() => setSearchOpen(true)}
-              >
-                <Search className="h-5 w-5" strokeWidth={1.5} />
-                <span className="sr-only">Search</span>
-              </Button>
 
               {/* Cart Button with Hover Popup */}
               <div 
@@ -612,6 +625,16 @@ export function Header() {
           </div>
         </div>
       )}
+
+      {/* Floating Book Appointment button - visible below 1110px */}
+      <LocalizedClientLink href="/book" className="fixed bottom-6 right-6 z-50 min-[1110px]:hidden">
+        <Button
+          size="lg"
+          className="hover:cursor-pointer rounded-full shadow-lg"
+        >
+          Book an Appointment
+        </Button>
+      </LocalizedClientLink>
     </>
   )
 }

@@ -4,6 +4,7 @@ import { listProducts } from "@/lib/data/products"
 import { getRegion, listRegions } from "@/lib/data/regions"
 import { HttpTypes } from "@medusajs/types"
 import ProductTemplate from "./product-template"
+import Spinner from "@/components/common/icons/spinner"
 
 type Props = {
   params: Promise<{ countryCode: string; slug: string }>
@@ -44,8 +45,7 @@ export async function generateStaticParams() {
       .filter((param) => param.slug)
   } catch (error) {
     console.error(
-      `Failed to generate static paths for product pages: ${
-        error instanceof Error ? error.message : "Unknown error"
+      `Failed to generate static paths for product pages: ${error instanceof Error ? error.message : "Unknown error"
       }.`
     )
     return []
@@ -105,6 +105,7 @@ export default async function ProductPage(props: Props) {
   const params = await props.params
   const region = await getRegion(params.countryCode)
   const searchParams = await props.searchParams
+  let loading = true
 
   const selectedVariantId = searchParams.v_id
 
@@ -115,9 +116,22 @@ export default async function ProductPage(props: Props) {
   const pricedProduct = await listProducts({
     countryCode: params.countryCode,
     queryParams: { handle: params.slug },
-  }).then(({ response }) => response.products[0])
+  }).then(({ response }) => response.products[0]).finally(() => {
+    loading = false
+  })
 
   const images = getImagesForVariant(pricedProduct, selectedVariantId) ?? []
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <Spinner />
+        </div>
+      </div>
+    )
+  }
+
 
   if (!pricedProduct) {
     notFound()

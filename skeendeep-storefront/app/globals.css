@@ -4,90 +4,90 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Nature-inspired heritage palette */
-  --background: #FAF8F5;
+  /* Pot Pourri palette */
+  --background: #f9f5f1; /* White tinted 10% with Pot Pourri */
   --foreground: #1A1A1A;
   --card: #FFFFFF;
   --card-foreground: #1A1A1A;
   --popover: #FFFFFF;
   --popover-foreground: #1A1A1A;
   
-  /* Primary: Rich ochre/terracotta - earth and clay */
-  --primary: #1A1A1A;
+  /* Primary: Coral Tree - main brand color */
+  --primary: #ab7c76;
   --primary-foreground: #FFFFFF;
   
-  /* Secondary: Warm cream - sunlit earth */
-  --secondary: #F5F0E8;
+  /* Secondary: Pot Pourri - warm cream */
+  --secondary: #efe1d5;
   --secondary-foreground: #1A1A1A;
   
-  /* Muted: Soft neutral - dust tones */
-  --muted: #E8E2D9;
-  --muted-foreground: #6B6560;
+  /* Muted: Thatch - neutral brown-gray */
+  --muted: #b4a49c;
+  --muted-foreground: #1A1A1A;
   
-  /* Accent: Ochre/terracotta for highlights */
-  --accent: #C4A77D;
+  /* Accent: Quicksand - alternate accent */
+  --accent: #bca494;
   --accent-foreground: #1A1A1A;
   
-  /* Terracotta for destructive/alerts */
-  --destructive: #A65D3F;
+  /* Destructive: Deeper coral tone */
+  --destructive: #9a6a64;
   --destructive-foreground: #FFFFFF;
   
-  --border: #E5DFD6;
-  --input: #E5DFD6;
-  --ring: #C4A77D;
+  --border: #e6ddd3; /* Pot Pourri slightly darker */
+  --input: #e6ddd3;
+  --ring: #ab7c76; /* Coral Tree */
   
-  /* Chart colors using heritage palette */
-  --chart-1: #C4A77D;
-  --chart-2: #8B7355;
-  --chart-3: #2C4A52;
-  --chart-4: #3D5A45;
-  --chart-5: #A65D3F;
+  /* Chart colors using new palette */
+  --chart-1: #ab7c76; /* Coral Tree */
+  --chart-2: #bca494; /* Quicksand */
+  --chart-3: #b4a49c; /* Thatch */
+  --chart-4: #efe1d5; /* Pot Pourri */
+  --chart-5: #9a6a64; /* Deeper coral */
   
   --radius: 0.5rem;
   
-  --sidebar: #FAF8F5;
+  --sidebar: #f9f5f1;
   --sidebar-foreground: #1A1A1A;
-  --sidebar-primary: #1A1A1A;
+  --sidebar-primary: #ab7c76;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F5F0E8;
+  --sidebar-accent: #efe1d5; /* Pot Pourri */
   --sidebar-accent-foreground: #1A1A1A;
-  --sidebar-border: #E5DFD6;
-  --sidebar-ring: #C4A77D;
+  --sidebar-border: #e6ddd3;
+  --sidebar-ring: #ab7c76; /* Coral Tree */
 }
 
 .dark {
   --background: #1A1A1A;
-  --foreground: #FAF8F5;
+  --foreground: #f9f5f1;
   --card: #252525;
-  --card-foreground: #FAF8F5;
+  --card-foreground: #f9f5f1;
   --popover: #252525;
-  --popover-foreground: #FAF8F5;
-  --primary: #FAF8F5;
-  --primary-foreground: #1A1A1A;
+  --popover-foreground: #f9f5f1;
+  --primary: #ab7c76; /* Coral Tree */
+  --primary-foreground: #FFFFFF;
   --secondary: #2D2D2D;
-  --secondary-foreground: #FAF8F5;
-  --muted: #2D2D2D;
-  --muted-foreground: #A8A29E;
-  --accent: #C4A77D;
+  --secondary-foreground: #efe1d5;
+  --muted: #3D3D3D;
+  --muted-foreground: #b4a49c; /* Thatch */
+  --accent: #bca494; /* Quicksand */
   --accent-foreground: #1A1A1A;
-  --destructive: #A65D3F;
+  --destructive: #9a6a64;
   --destructive-foreground: #FFFFFF;
   --border: #3D3D3D;
   --input: #3D3D3D;
-  --ring: #C4A77D;
-  --chart-1: #C4A77D;
-  --chart-2: #8B7355;
-  --chart-3: #4A7C8B;
-  --chart-4: #5A7D62;
-  --chart-5: #C97A5D;
+  --ring: #ab7c76; /* Coral Tree */
+  --chart-1: #ab7c76; /* Coral Tree */
+  --chart-2: #bca494; /* Quicksand */
+  --chart-3: #b4a49c; /* Thatch */
+  --chart-4: #efe1d5; /* Pot Pourri */
+  --chart-5: #9a6a64;
   --sidebar: #1A1A1A;
-  --sidebar-foreground: #FAF8F5;
-  --sidebar-primary: #C4A77D;
-  --sidebar-primary-foreground: #1A1A1A;
+  --sidebar-foreground: #f9f5f1;
+  --sidebar-primary: #ab7c76; /* Coral Tree */
+  --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #2D2D2D;
-  --sidebar-accent-foreground: #FAF8F5;
+  --sidebar-accent-foreground: #efe1d5;
   --sidebar-border: #3D3D3D;
-  --sidebar-ring: #C4A77D;
+  --sidebar-ring: #ab7c76; /* Coral Tree */
 }
 
 @theme inline {
@@ -148,10 +148,10 @@ html {
 
 /* Utilities for hiding scrollbars */
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+  display: none !important; /* Chrome, Safari and Opera */
 }

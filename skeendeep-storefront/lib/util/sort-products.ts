@@ -1,5 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+
+export type SortOptions = "price_asc" | "price_desc" | "created_at" | "name"
 
 interface MinPricedProduct extends HttpTypes.StoreProduct {
   _minPrice?: number
@@ -43,6 +44,12 @@ export function sortProducts(
       return (
         new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
       )
+    })
+  }
+
+  if (sortBy === "name") {
+    sortedProducts.sort((a, b) => {
+      return (a.title || "").localeCompare(b.title || "")
     })
   }
 

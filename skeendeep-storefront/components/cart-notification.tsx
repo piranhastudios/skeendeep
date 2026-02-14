@@ -30,8 +30,8 @@ export default function CartNotification() {
         )}
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-            <CheckCircle className="w-5 h-5 text-green-600" />
+          <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
+            <CheckCircle className="w-5 h-5 text-accent" />
           </div>
           
           <div className="flex-1 min-w-0">

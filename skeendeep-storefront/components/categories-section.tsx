@@ -4,26 +4,26 @@ import { Button } from "@/components/ui/button"
 
 const rooms = [
   {
-    name: "Living Room",
-    image: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=600&q=80",
-    href: "/collections/living-room",
+    name: "About us",
+    image: "/images/dr_afong.png",
+    href: "/about-us",
     featured: true,
   },
   {
-    name: "Dining Room",
-    image: "https://images.unsplash.com/photo-1617806118233-18e1de247200?w=600&q=80",
-    href: "/collections/dining-room",
+    name: "Our Services",
+    image: "https://plus.unsplash.com/premium_photo-1719617672948-862f2f06e2a1?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    href: "/our-services",
   },
   {
-    name: "Entryway",
-    image: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80",
-    href: "/collections/entryway",
+    name: "Daily skin care guides",
+    image: "https://images.unsplash.com/photo-1648203276014-20f97ba1f817?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    href: "/daily-skin-care-guides",
   },
 ]
 
 import type { SanityDocument } from "next-sanity"
 
-export function RoomCategoriesSection({ homePageData }: { homePageData?: SanityDocument }) {
+export function CategoriesSection({ homePageData }: { homePageData?: SanityDocument }) {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-6">

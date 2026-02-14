@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import LocalizedClientLink from "@/components/common/localized-client-link"
 import imageUrlBuilder, { type SanityImageSource } from "@sanity/image-url"
 import { client } from "@/lib/sanity/client"
@@ -37,7 +38,7 @@ export function HeroSection({ homePageData }: { homePageData?: SanityDocument })
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-6 pt-20 pb-16 md:pt-28 flex flex-col justify-center min-h-[85vh] md:min-h-screen">
-          <div className="max-w-2xl">
+          <div className="max-w-xl">
             <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-white leading-[1.1] tracking-tight text-balance">
               {heading.split('\n').map((line: string, i: number) => (
                 <span key={i}>
@@ -47,25 +48,30 @@ export function HeroSection({ homePageData }: { homePageData?: SanityDocument })
               ))}
             </h1>
 
-            <p className="mt-6 text-white/80 text-sm md:text-base max-w-md leading-relaxed">
-              {description}
-            </p>
-            <div className={"flex space-x-4"}>
-              <LocalizedClientLink href="/book">
-                <Button
-                  className="mt-8 bg-background text-foreground hover:cursor-pointer hover:bg-background/90 rounded-full px-8 py-6 text-sm font-medium"
-                >
-                  Book an Appointment
-                </Button>
-              </LocalizedClientLink>
-              <LocalizedClientLink href="/products">
-                <Button
-                  className="mt-8 bg-foreground text-background hover:cursor-pointer hover:bg-foreground/90 rounded-full px-8 py-6 text-sm font-medium"
-                >
-                  Explore Products
-                </Button>
-              </LocalizedClientLink>
-            </div>
+            <Card className="mt-8 bg-white/10 backdrop-blur-md border-0 w-fit">
+              <CardContent className="p-6">
+                <p className="text-white/90 text-sm md:text-base max-w-md leading-relaxed">
+                  {description}
+                </p>
+                <div className="flex flex-col md:flex-row gap-4 mt-8">
+                  <LocalizedClientLink href="/book">
+                    <Button
+                      className="bg-primary text-primary-foreground hover:cursor-pointer hover:bg-primary/80 rounded-full px-8 py-6 text-sm font-medium"
+                    >
+                      Book an Appointment
+                    </Button>
+                  </LocalizedClientLink>
+                  <LocalizedClientLink href="/products">
+                    <Button
+                      variant="secondary"
+                      className="hover:cursor-pointer rounded-full px-8 py-6 text-sm font-medium"
+                    >
+                      Explore Products
+                    </Button>
+                  </LocalizedClientLink>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

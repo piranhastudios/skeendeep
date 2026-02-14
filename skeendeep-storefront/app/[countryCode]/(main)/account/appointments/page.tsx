@@ -177,7 +177,7 @@ export default function AppointmentsPage() {
                     </TabsContent>
 
                     <TabsContent value="book">
-                        <Card className="overflow-hidden bg-white border-0 shadow-none">
+                        <Card className="overflow-hidden bg-white border-0 shadow-none min-h-screen">
                             {/* 
                                 WORKAROUND: Visually crop the top of the iframe to hide unwanted headers. 
                                 Adjust '-mt-[60px]' to match the height of the element you want to remove.
@@ -187,7 +187,7 @@ export default function AppointmentsPage() {
                                 <iframe
                                     src={bookingUrl}
                                     title="Schedule Appointment"
-                                    className="w-full min-h-[800px] border-0 -mt-[60px] overflow-hidden scrollbar-hide"
+                                    className="w-full min-h-screen border-0 -mt-[60px] overflow-hidden scrollbar-hide"
                                 />
                             </div>
                             <Script src="https://embed.acuityscheduling.com/js/embed.js" />

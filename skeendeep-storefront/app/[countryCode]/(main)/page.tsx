@@ -4,7 +4,7 @@ import { MissionStatement } from "@/components/mission-statement"
 import { CustomizeSection } from "@/components/customize-section"
 import { ProductsSection } from "@/components/products-section"
 import { SustainabilitySection } from "@/components/sustainability-section"
-import { RoomCategoriesSection } from "@/components/room-categories-section"
+import { CategoriesSection } from "@/components/categories-section"
 import { Footer } from "@/components/footer"
 import { listCollections } from "@/lib/data/collections"
 import { getRegion } from "@/lib/data/regions"
@@ -66,7 +66,7 @@ export default async function Home(props: {
       <CustomizeSection homePageData={homePageData} />
       <ProductsSection collections={collections} region={region} />
       <SustainabilitySection homePageData={homePageData} />
-      <RoomCategoriesSection homePageData={homePageData} />
+      <CategoriesSection homePageData={homePageData} />
     </>
   )
 }
