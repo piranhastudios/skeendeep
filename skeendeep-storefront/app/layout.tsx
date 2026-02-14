@@ -27,10 +27,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/images/ndara-logo.svg',
+        url: '/favicon.icq',
       },
     ],
-    apple: '/images/ndara-logo.svg',
+    apple: '/icon-2.svg',
   },
 }
 
