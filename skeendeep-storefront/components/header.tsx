@@ -196,7 +196,7 @@ export function Header() {
             <div ref={mobileLogoRef} className="absolute left-1/2 -translate-x-1/2">
               <Link href="/" className="flex items-center">
                 <Image
-                  src="/images/logo.svg"
+                  src="/logo.svg"
                   alt="NDARA"
                   width={120}
                   height={48}
@@ -225,7 +225,7 @@ export function Header() {
             {/* Logo - sits directly on hero */}
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/logo.svg"
+                src="/logo.png"
                 alt="NDARA"
                 width={100}
                 height={100}

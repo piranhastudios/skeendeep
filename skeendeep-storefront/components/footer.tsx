@@ -91,7 +91,7 @@ export async function Footer() {
           <div className="col-span-2">
             <Link href="/" className="flex items-center mb-4">
               <Image
-                src="/images/ndara-logo.svg"
+                src="/logo.png"
                 alt="NDARA"
                 width={120}
                 height={48}
