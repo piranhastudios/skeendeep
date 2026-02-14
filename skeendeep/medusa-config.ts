@@ -74,6 +74,22 @@ module.exports = defineConfig({
       },
     },
     {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "medusav2-file-supabase-storage",
+            id: "supabase",
+            options: {
+              supabaseUrl: process.env.SUPABASE_URL!,
+              apiKey: process.env.SUPABASE_KEY!,
+              bucketName: process.env.SUPABASE_BUCKET!,
+            },
+          },
+        ],
+      },
+    },
+    {
       resolve: "@medusajs/medusa/cache-redis",
       options: {
         redisUrl: process.env.REDIS_URL,
