@@ -24,7 +24,7 @@ async function getAboutPageData() {
 
 export default async function AboutPage() {
   const data = await getAboutPageData()
-
+  // debugger;
   // Fallback data
   const {
     headerSection = {
@@ -118,7 +118,7 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      
+
       {/* Page Header */}
       <section className="bg-secondary py-16 md:py-24">
         <div className="container mx-auto px-6">
@@ -149,7 +149,7 @@ export default async function AboutPage() {
                 {storySection.title}
               </h2>
               <div className="mt-6 space-y-4 text-muted-foreground leading-relaxed">
-                 <PortableText value={storySection.description} />
+                <PortableText value={storySection.description} />
               </div>
             </div>
           </div>
@@ -188,7 +188,9 @@ export default async function AboutPage() {
       {/* Stats Section */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid gap-8 md:gap-12" style={{ 
+            gridTemplateColumns: `repeat(auto-fit, minmax(${statsSection.stats?.length > 3 ? '200px' : '250px'}, 1fr))` 
+          }}>
             {statsSection.stats?.map((stat: any, index: number) => (
               <div key={index} className="text-center">
                 <span className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-foreground">
@@ -213,9 +215,9 @@ export default async function AboutPage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="flex flex-wrap justify-center gap-8">
             {teamSection.teamMembers?.map((member: any, index: number) => (
-              <div key={index} className="text-center">
+              <div key={index} className="text-center w-full sm:w-64">
                 <div className="relative aspect-square rounded-xl overflow-hidden mb-4">
                   <Image
                     src={member.image ? urlFor(member.image).width(400).url() : "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&q=80"}
@@ -267,6 +269,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-          </div>
+    </div>
   )
 }

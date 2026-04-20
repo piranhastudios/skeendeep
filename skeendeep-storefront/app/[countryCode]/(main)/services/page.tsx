@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Paintbrush, Truck, Wrench, Ruler, ArrowRight } from "lucide-react"
+import { Paintbrush, Truck, Wrench, Ruler, ArrowRight, BatteryCharging, Apple, WandSparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -10,15 +10,15 @@ import imageUrlBuilder, { type SanityImageSource } from "@sanity/image-url"
 import { type Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: 'Treatments',
-  description: 'We treat Acne, Excessive Sweating, Wrinkles, Thread Veins and offers Fat Reduction. Explore our range of treatments specifically tailored to you and your skin.',
+	title: 'Treatments',
+	description: 'We treat Acne, Excessive Sweating, Wrinkles, Thread Veins and offers Fat Reduction. Explore our range of treatments specifically tailored to you and your skin.',
 }
 
 const { projectId, dataset } = client.config()
 const urlFor = (source: SanityImageSource) =>
-  projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
-    : null
+	projectId && dataset
+		? imageUrlBuilder({ projectId, dataset }).image(source)
+		: null
 
 const SERVICES_PAGE_QUERY = `*[_type == "servicesPage"] | order(publishedAt desc)[0]{
   _id,
@@ -46,10 +46,13 @@ const SERVICES_PAGE_QUERY = `*[_type == "servicesPage"] | order(publishedAt desc
 const options = { next: { revalidate: 30 } }
 
 const iconMap = {
-  Paintbrush,
-  Ruler,
-  Truck,
-  Wrench,
+	Paintbrush,
+	Ruler,
+	Truck,
+	Wrench,
+	BatteryCharging,
+	Apple,
+	WandSparkles
 }
 
 const defaultServices = [
@@ -182,15 +185,13 @@ export default async function ServicesPage() {
 							return (
 								<div
 									key={service.title}
-									className={`grid md:grid-cols-2 gap-12 items-center ${
-										index % 2 === 1 ? "md:flex-row-reverse" : ""
-									}`}
+									className={`grid md:grid-cols-2 gap-12 items-center ${index % 2 === 1 ? "md:flex-row-reverse" : ""
+										}`}
 								>
 									{/* Image */}
 									<div
-										className={`relative aspect-[4/3] rounded-2xl overflow-hidden ${
-											index % 2 === 1 ? "md:order-2" : ""
-										}`}
+										className={`relative aspect-[4/3] rounded-2xl overflow-hidden ${index % 2 === 1 ? "md:order-2" : ""
+											}`}
 									>
 										<Image
 											src={service.image || "/placeholder.svg"}
@@ -222,7 +223,7 @@ export default async function ServicesPage() {
 												</li>
 											))}
 										</ul>
-										<LocalizedClientLink href="/services/details">
+										<LocalizedClientLink href="/services/list">
 											<Button className="mt-8 rounded-full bg-foreground text-background hover:bg-foreground/90 px-6">
 												Learn More{" "}
 												<ArrowRight className="w-4 h-4 ml-2" />
@@ -283,6 +284,6 @@ export default async function ServicesPage() {
 				</div>
 			</section>
 
-					</div>
+		</div>
 	)
 }

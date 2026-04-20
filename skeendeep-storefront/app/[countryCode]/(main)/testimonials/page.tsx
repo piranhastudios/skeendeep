@@ -1,12 +1,10 @@
-import Image from "next/image"
-import { Star, Quote } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 import { client } from "@/lib/sanity/client"
 import { type SanityDocument } from "next-sanity"
 import imageUrlBuilder, { type SanityImageSource } from "@sanity/image-url"
 import { type Metadata } from "next"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import {reviewsData} from "@/lib/data/reveiws"
+import { FeaturedTestimonialCard, TestimonialCard } from "./testimonial-cards"
 
 export const metadata: Metadata = {
   title: 'Testimonials',
@@ -42,74 +40,27 @@ const TESTIMONIALS_PAGE_QUERY = `*[_type == "testimonialsPage"] | order(publishe
 
 const options = { next: { revalidate: 30 } }
 
-const defaultTestimonials = [
-  {
-    id: 1,
-    name: "Amara Osei",
-    role: "Interior Designer",
-    location: "Lagos, Nigeria",
-    rating: 5,
-    text: "NDARA transformed my client's home beyond expectations. The attention to detail and quality of craftsmanship is unmatched. Every piece tells a story and brings warmth to the space.",
-    image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=200&q=80",
-    featured: true,
-  },
-  {
-    id: 2,
-    name: "David Chen",
-    role: "Homeowner",
-    location: "Singapore",
-    rating: 5,
-    text: "The custom dining table we ordered is absolutely stunning. From the initial consultation to delivery, the process was seamless. It's now the centerpiece of our home.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
-    featured: false,
-  },
-  {
-    id: 3,
-    name: "Fatou Diallo",
-    role: "Architect",
-    location: "Dakar, Senegal",
-    rating: 5,
-    text: "I've worked with many furniture brands, but NDARA stands apart. Their commitment to sustainability and traditional craftsmanship aligns perfectly with my design philosophy.",
-    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&q=80",
-    featured: true,
-  },
-  {
-    id: 4,
-    name: "James Okonkwo",
-    role: "Hotel Owner",
-    location: "Accra, Ghana",
-    rating: 5,
-    text: "We furnished our entire boutique hotel with NDARA pieces. Our guests constantly compliment the furniture, and the durability has been exceptional even with heavy use.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80",
-    featured: false,
-  },
-  {
-    id: 5,
-    name: "Priya Sharma",
-    role: "Business Executive",
-    location: "Mumbai, India",
-    rating: 5,
-    text: "The Theodore Armchair is the most comfortable piece of furniture I've ever owned. The quality is evident in every stitch and curve. Worth every penny.",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&q=80",
-    featured: false,
-  },
-  {
-    id: 6,
-    name: "Kofi Mensah",
-    role: "Art Collector",
-    location: "Kumasi, Ghana",
-    rating: 5,
-    text: "NDARA understands that furniture is art. Their pieces complement my collection beautifully and have become conversation starters at every gathering.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80",
-    featured: true,
-  },
-]
+// Transform Google reviews into testimonial format
+const googleReviews = (reviewsData as any).data?.[0]?.reviews_data || []
+const defaultTestimonials = googleReviews
+  .filter((review: any) => review.review_text && review.review_text.trim().length > 0)
+  .map((review: any, index: number) => ({
+    id: index + 1,
+    name: review.author_title,
+    role: "Verified Patient",
+    location: (reviewsData as any).data?.[0]?.city || "Birmingham",
+    rating: review.review_rating,
+    text: review.review_text,
+    image: review.author_image,
+    featured: index < 3, // First 3 reviews are featured
+  }))
 
+const businessData = (reviewsData as any).data?.[0]
 const defaultStats = [
-  { value: "4.9", label: "Average Rating" },
-  { value: "5000+", label: "Happy Customers" },
-  { value: "98%", label: "Would Recommend" },
-  { value: "12", label: "Countries" },
+  { value: businessData?.rating?.toString() || "5.0", label: "Average Rating" },
+  { value: businessData?.reviews?.toString() || "13", label: "Total Reviews" },
+  { value: "100%", label: "5-Star Reviews" },
+  { value: "Verified", label: "Google Reviews" },
 ]
 
 export default async function TestimonialsPage() {
@@ -205,12 +156,12 @@ export default async function TestimonialsPage() {
               {ctaDescription}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="/products" 
+              <LocalizedClientLink 
+                href="/auth" 
                 className="inline-flex items-center justify-center rounded-full bg-foreground text-background hover:bg-foreground/90 px-8 py-3 text-sm font-medium transition-colors"
               >
-                Shop Now
-              </a>
+                Join Today
+              </LocalizedClientLink>
               <a 
                 href="#" 
                 className="inline-flex items-center justify-center rounded-full border border-foreground/20 text-foreground hover:bg-foreground hover:text-background px-8 py-3 text-sm font-medium transition-colors"
@@ -223,83 +174,5 @@ export default async function TestimonialsPage() {
       </section>
 
           </>
-  )
-}
-
-function FeaturedTestimonialCard({ testimonial }: { testimonial: any }) {
-  return (
-    <div className="bg-card border border-border rounded-xl p-8 relative">
-      <Quote className="w-10 h-10 text-accent/20 absolute top-6 right-6" />
-      
-      <div className="flex items-center gap-0.5 mb-6">
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            className={cn(
-              "w-4 h-4",
-              i < testimonial.rating
-                ? "fill-accent text-accent"
-                : "fill-muted text-muted"
-            )}
-          />
-        ))}
-      </div>
-      
-      <p className="text-foreground leading-relaxed mb-8">
-        &ldquo;{testimonial.text}&rdquo;
-      </p>
-      
-      <div className="flex items-center gap-4">
-        <div className="relative w-12 h-12 rounded-full overflow-hidden">
-          <Image
-            src={testimonial.image || "/placeholder.svg"}
-            alt={testimonial.name}
-            fill
-            className="object-cover"
-          />
-        </div>
-        <div>
-          <h4 className="font-medium text-foreground">{testimonial.name}</h4>
-          <p className="text-sm text-muted-foreground">{testimonial.role}, {testimonial.location}</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function TestimonialCard({ testimonial }: { testimonial: any }) {
-  return (
-    <div className="bg-background rounded-xl p-8 flex gap-6">
-      <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-        <Image
-          src={testimonial.image || "/placeholder.svg"}
-          alt={testimonial.name}
-          fill
-          className="object-cover"
-        />
-      </div>
-      <div>
-        <div className="flex items-center gap-0.5 mb-3">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={cn(
-                "w-3.5 h-3.5",
-                i < testimonial.rating
-                  ? "fill-accent text-accent"
-                  : "fill-muted text-muted"
-              )}
-            />
-          ))}
-        </div>
-        <p className="text-foreground text-sm leading-relaxed mb-4">
-          &ldquo;{testimonial.text}&rdquo;
-        </p>
-        <div>
-          <h4 className="font-medium text-foreground text-sm">{testimonial.name}</h4>
-          <p className="text-xs text-muted-foreground">{testimonial.role}, {testimonial.location}</p>
-        </div>
-      </div>
-    </div>
   )
 }
