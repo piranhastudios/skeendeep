@@ -7,7 +7,7 @@ module.exports = defineConfig({
    admin: {
     disable: process.env.ADMIN_DISABLED === "true" || false,
     backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
-    path: `/`,
+    path: `/app`,
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -97,6 +97,9 @@ module.exports = defineConfig({
     },
     {
       resolve: "./src/modules/appointments",
+    },
+    {
+      resolve: "./src/modules/prescriptions",
     },
   ],
 })

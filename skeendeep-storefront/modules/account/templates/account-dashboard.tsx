@@ -1,6 +1,6 @@
 'use client'
 import { HttpTypes } from "@medusajs/types"
-import { Package, Heart, Settings, MapPin, CreditCard, User, LogOut } from "lucide-react"
+import { Package, Heart, Settings, MapPin, CreditCard, User, LogOut, Pill } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -47,6 +47,12 @@ const AccountDashboard = ({ customer }: AccountDashboardProps) => {
       href: "/account/appointments",
       icon: Calendar,
       description: "Manage your appointments"
+    },
+    {
+      name: "Prescriptions",
+      href: "/account/prescriptions",
+      icon: Pill,
+      description: "View your active prescriptions"
     },
     {
       name: "Addresses",

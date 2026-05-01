@@ -2,11 +2,14 @@
 
 import { useState, useMemo, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Minus, Plus } from "lucide-react"
+import { Minus, Plus, AlertCircle } from "lucide-react"
 import { HttpTypes } from "@medusajs/types"
 import { convertToLocale } from "@/lib/util/money"
 import { useCart } from "@/lib/cart-store"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/lib/auth-store"
+import { sdk } from "@/lib/config"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -31,7 +34,10 @@ export default function ProductActions({
 }: ProductActionsProps) {
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [quantity, setQuantity] = useState(1)
+  const [prescriptionError, setPrescriptionError] = useState<string | null>(null)
+  const [validatingPrescription, setValidatingPrescription] = useState(false)
   const { addItem, isLoading } = useCart()
+  const { customer, isAuthenticated } = useAuth()
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -96,20 +102,92 @@ export default function ProductActions({
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity < 1) return
     setQuantity(newQuantity)
+    // Clear prescription error when quantity changes
+    setPrescriptionError(null)
+  }
+
+  // Check if product requires prescription
+  const requiresPrescription = useMemo(() => {
+    return product.tags?.some(tag => tag.value.toLowerCase() === "prescription")
+  }, [product.tags])
+
+  // Validate prescription before adding to cart
+  const validatePrescription = async (): Promise<{ valid: boolean; reason?: string }> => {
+    if (!requiresPrescription) {
+      return { valid: true }
+    }
+
+    if (!isAuthenticated || !customer) {
+      return {
+        valid: false,
+        reason: "You must be logged in to purchase prescription products."
+      }
+    }
+
+    try {
+      setValidatingPrescription(true)
+      const response = await sdk.client.fetch<{
+        valid: boolean
+        reason?: string
+      }>("/store/prescriptions/validate", {
+        method: "POST",
+        body: {
+          product_id: product.id,
+          quantity,
+        },
+      })
+
+      return response
+    } catch (error: any) {
+      return {
+        valid: false,
+        reason: error.message || "Failed to validate prescription. Please try again."
+      }
+    } finally {
+      setValidatingPrescription(false)
+    }
   }
 
   // Handle add to cart
   const handleAddToCart = async () => {
     if (!selectedVariant) return
 
+    setPrescriptionError(null)
+
+    // Validate prescription if required
+    if (requiresPrescription) {
+      const validation = await validatePrescription()
+      if (!validation.valid) {
+        setPrescriptionError(validation.reason || "Prescription validation failed")
+        return
+      }
+    }
+
     await addItem(selectedVariant.id, quantity)
   }
 
   const hasMultipleVariants = (product.variants?.length || 0) > 1
-  const canAddToCart = selectedVariant && inStock && !disabled && !isLoading
+  const canAddToCart = selectedVariant && inStock && !disabled && !isLoading && !validatingPrescription
 
   return (
     <div className="space-y-6">
+      {/* Prescription Notice */}
+      {requiresPrescription && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            This product requires a valid prescription. {isAuthenticated ? "We'll verify your prescription before adding to cart." : "Please log in to purchase."}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Prescription Error */}
+      {prescriptionError && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{prescriptionError}</AlertDescription>
+        </Alert>
+      )}
       {/* Variant Options */}
       {hasMultipleVariants && (
         <div className="space-y-4">
@@ -198,7 +276,9 @@ export default function ProductActions({
         className="w-full h-12 rounded-full bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50"
         size="lg"
       >
-        {isLoading
+        {validatingPrescription
+          ? "Validating Prescription..."
+          : isLoading
           ? "Adding to Cart..."
           : !selectedVariant
           ? "Select Options"
