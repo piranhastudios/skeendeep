@@ -106,10 +106,10 @@ export default function ProductsTemplate({
       <section className="bg-secondary py-16 md:py-24">
         <div className="container mx-auto px-6">
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-foreground tracking-tight text-center">
-            Our Products
+            Skincare Products
           </h1>
           <p className="mt-4 text-muted-foreground text-center max-w-2xl mx-auto">
-            Discover our curated collection of handcrafted furniture, designed to bring warmth and sophistication to your home.
+            Discover our curated collection of skincare products, exclusively recommended by Dr. Afong.
           </p>
         </div>
       </section>

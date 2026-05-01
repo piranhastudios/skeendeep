@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Minus, Plus, AlertCircle } from "lucide-react"
+import { Minus, Plus, AlertCircle, CalendarDays } from "lucide-react"
 import { HttpTypes } from "@medusajs/types"
 import { convertToLocale } from "@/lib/util/money"
 import { useCart } from "@/lib/cart-store"
@@ -269,23 +270,34 @@ export default function ProductActions({
         </div>
       </div>
 
-      {/* Add to Cart Button */}
-      <Button
-        onClick={handleAddToCart}
-        disabled={!canAddToCart}
-        className="w-full h-12 rounded-full bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50"
-        size="lg"
-      >
-        {validatingPrescription
-          ? "Validating Prescription..."
-          : isLoading
-          ? "Adding to Cart..."
-          : !selectedVariant
-          ? "Select Options"
-          : !inStock
-          ? "Out of Stock"
-          : `Add to Cart - ${quantity > 1 ? `${quantity} items` : '1 item'}`}
-      </Button>
+      {/* Add to Cart / Book Appointment Button */}
+      {requiresPrescription ? (
+        <Button
+          asChild
+          className="w-full h-12 rounded-full bg-foreground text-background hover:bg-foreground/90"
+          size="lg"
+        >
+          <Link href="/book">
+            <CalendarDays className="mr-2 h-4 w-4" />
+            Book Appointment
+          </Link>
+        </Button>
+      ) : (
+        <Button
+          onClick={handleAddToCart}
+          disabled={!canAddToCart}
+          className="w-full h-12 rounded-full bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50"
+          size="lg"
+        >
+          {isLoading
+            ? "Adding to Cart..."
+            : !selectedVariant
+            ? "Select Options"
+            : !inStock
+            ? "Out of Stock"
+            : "Add to Cart"}
+        </Button>
+      )}
 
       {/* Stock Status */}
       {selectedVariant && (

@@ -21,6 +21,12 @@ export const CreatePrescriptionModal = ({ open, onOpenChange }: CreatePrescripti
   const [errors, setErrors] = useState<Record<string, string>>({})
   const queryClient = useQueryClient()
 
+  // Fetch current admin user to use as prescribed_by
+  const { data: meData } = useQuery({
+    queryFn: () => sdk.admin.user.me(),
+    queryKey: ["current-admin-user"],
+  })
+
   // Fetch customers for selection
   const { data: customersData } = useQuery({
     queryFn: () => sdk.admin.customer.list({ limit: 100 }),
@@ -80,6 +86,7 @@ export const CreatePrescriptionModal = ({ open, onOpenChange }: CreatePrescripti
     createPrescription.mutate({
       ...formData,
       expires_at: formData.expires_at ? new Date(formData.expires_at).toISOString() : null,
+      prescribed_by: meData?.user?.id ?? "unknown",
     })
   }
 
