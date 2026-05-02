@@ -29,7 +29,7 @@
     "@medusajs/cli": "2.12.5",
     "@medusajs/framework": "2.12.5",
     "@medusajs/medusa": "2.12.5",
-    "medusav2-file-supabase-storage": "^0.0.9",
+    "medusav2-file-supabase-storage": "^0.1.6",
     "resend": "^6.9.2"
   },
   "devDependencies": {

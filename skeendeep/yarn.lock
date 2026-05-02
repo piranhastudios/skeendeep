@@ -13157,9 +13157,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"medusav2-file-supabase-storage@npm:^0.0.9":
-  version: 0.0.9
-  resolution: "medusav2-file-supabase-storage@npm:0.0.9"
+"medusav2-file-supabase-storage@npm:^0.1.6":
+  version: 0.1.6
+  resolution: "medusav2-file-supabase-storage@npm:0.1.6"
   dependencies:
     "@supabase/supabase-js": "npm:^2.49.1"
   peerDependencies:
@@ -13177,7 +13177,7 @@ __metadata:
     "@mikro-orm/postgresql": 6.4.3
     awilix: ^8.0.1
     pg: ^8.13.0
-  checksum: 10c0/e08f4bfe33e28fcbea055ecd6fce122ef1cea1bc4d06ba2e17b52d079a2f85ad049408cb478186afadc5729965748c9042bb9bbe7e3ab2173a6da639f95b3ba9
+  checksum: 10c0/6e7ec220690b5b8db83f126d67457edea1a9deadf7d4782e87ad03ea2b1958fb6e3205f50eb27a934351c8c946e3ee08df3377ff45611ece9fd180d853a388d0
   languageName: node
   linkType: hard
 
@@ -13577,7 +13577,7 @@ __metadata:
     "@types/react": "npm:^18.3.2"
     "@types/react-dom": "npm:^18.2.25"
     jest: "npm:^29.7.0"
-    medusav2-file-supabase-storage: "npm:^0.0.9"
+    medusav2-file-supabase-storage: "npm:^0.1.6"
     prop-types: "npm:^15.8.1"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
