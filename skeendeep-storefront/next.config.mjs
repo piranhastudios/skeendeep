@@ -4,7 +4,12 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    domains: [
+      "res.cloudinary.com",
+      "cdn.sanity.io",
+      "medusa-public-images.s3.eu-west-1.amazonaws.com",
+      "edzvbldhjtahfxzruynw.supabase.co",
+    ],    
   },
 }
 
