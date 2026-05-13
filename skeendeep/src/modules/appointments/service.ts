@@ -49,7 +49,7 @@ class AppointmentModuleService extends MedusaService({
     }
 
     if (existing) {
-      return await this.updateAppointments(appointmentData)
+      return await this.updateAppointments([appointmentData])
     } else {
       return await this.createAppointments(appointmentData)
     }
