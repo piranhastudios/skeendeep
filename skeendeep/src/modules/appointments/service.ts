@@ -19,9 +19,7 @@ class AppointmentModuleService extends MedusaService({
     }
 
     const appointmentData = {
-      id: payload.id.toString(), // ensure ID is string if it's coming as number
-      
-      // Handle naming discrepancies or missing fields
+      acuity_id: payload.id.toString(), // ensure ID is string if it's coming as number
       first_name: payload.firstName || "Unknown",
       last_name: payload.lastName || "Unknown",
       email: payload.email,
@@ -51,7 +49,7 @@ class AppointmentModuleService extends MedusaService({
     if (existing) {
       return await this.updateAppointments([appointmentData])
     } else {
-      return await this.createAppointments(appointmentData)
+      return await this.createAppointments([appointmentData])
     }
   }
 }

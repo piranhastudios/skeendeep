@@ -28,6 +28,7 @@ const Appointment = model.define("appointment", {
   location: model.text().nullable(),
   notes: model.text().nullable(),
   confirmation_page: model.text().nullable(),
+  acuity_id: model.text().nullable(), // Store original Acuity ID as text
 })
 
 export default Appointment
