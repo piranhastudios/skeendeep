@@ -11,5 +11,3 @@ export class Migration20260720120000 extends Migration {
   }
 
 }
-</content>
-</invoke>
