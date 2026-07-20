@@ -36,7 +36,8 @@ export default function AuthPage() {
       if (mode === "login") {
         result = await login(email, password)
       } else {
-        result = await register(name, email, password, "us")
+        const [firstName, ...rest] = name.trim().split(/\s+/)
+        result = await register(firstName, rest.join(" "), email, password)
       }
 
       if (result.success) {
@@ -152,12 +153,12 @@ export default function AuthPage() {
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
                   {mode === "login" && (
-                    <Link 
-                      href="/auth/forgot-password" 
+                    <LocalizedClientLink
+                      href="/auth/forgot-password"
                       className="text-sm text-accent hover:underline"
                     >
                       Forgot password?
-                    </Link>
+                    </LocalizedClientLink>
                   )}
                 </div>
                 <div className="relative">

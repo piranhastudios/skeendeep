@@ -6,29 +6,35 @@ export async function POST(req: NextRequest) {
   const { email, password } = body
 
   try {
-    const { token } = await sdk.auth.login("emailpass", {
+    const result = await sdk.auth.login("customer", "emailpass", {
       email,
       password,
     })
 
+    if (typeof result !== "string") {
+      return NextResponse.json(
+        { message: "Additional authentication steps are required" },
+        { status: 400 }
+      )
+    }
+
+    const token = result
+
     // Fetch customer profile immediately to verify token and return user data
     const { customer } = await sdk.store.customer.retrieve({}, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      Authorization: `Bearer ${token}`,
     })
 
     const response = NextResponse.json({ success: true, token, customer })
-    
+
     response.cookies.set("_medusa_jwt", token, {
       httpOnly: true,
-      secure: false, // Forcing false for localhost development
+      secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7,
       sameSite: "lax",
       path: "/",
     })
-    
-    // console.log("Login successful, cookie set. Secure: false")
+
     return response
   } catch (error: any) {
     console.error("Login route error details:", {

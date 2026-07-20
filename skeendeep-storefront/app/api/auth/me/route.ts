@@ -16,9 +16,7 @@ export async function GET(req: NextRequest) {
     // Try to call Medusa backend
     console.log("API /me: Calling Medusa customer.retrieve...")
     const { customer } = await sdk.store.customer.retrieve({}, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      Authorization: `Bearer ${token}`,
     })
     
     console.log("API /me: Customer retrieved successfully:", customer?.id)

@@ -27,10 +27,12 @@ type InjectedDependencies = {
 
 enum Templates {
     ORDER_PLACED = "order-placed",
+    PASSWORD_RESET = "password-reset",
 }
 
 const templateSubjects: { [key in Templates]: string } = {
     [Templates.ORDER_PLACED]: "Order Confirmation - Skeendeep",
+    [Templates.PASSWORD_RESET]: "Reset Your Password - Skeendeep",
 }
 
 
