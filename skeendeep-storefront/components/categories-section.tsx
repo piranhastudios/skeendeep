@@ -1,18 +1,18 @@
 import Image from "next/image"
-import Link from "next/link"
+import LocalizedClientLink from "@/components/common/localized-client-link"
 import { Button } from "@/components/ui/button"
 
 const rooms = [
   {
     name: "About us",
     image: "/images/dr_afong.png",
-    href: "/about-us",
+    href: "/about",
     featured: true,
   },
   {
     name: "Our Services",
     image: "https://plus.unsplash.com/premium_photo-1719617672948-862f2f06e2a1?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    href: "/our-services",
+    href: "/services",
   },
   {
     name: "Daily skin care guides",
@@ -42,20 +42,20 @@ export function CategoriesSection({ homePageData }: { homePageData?: SanityDocum
               <h3 className="font-serif text-white text-3xl md:text-4xl font-medium mb-4">
                 {rooms[0].name}
               </h3>
-              <Button 
+              <Button
                 asChild
                 className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-sm px-6 py-5 text-sm font-medium"
               >
-                <Link href={rooms[0].href}>
-                  See Collection
-                </Link>
+                <LocalizedClientLink href={rooms[0].href}>
+                  Learn More
+                </LocalizedClientLink>
               </Button>
             </div>
           </div>
 
           {/* Secondary Rooms */}
           {rooms.slice(1).map((room) => (
-            <Link
+            <LocalizedClientLink
               key={room.name}
               href={room.href}
               className="relative aspect-[4/3] rounded-lg overflow-hidden group"
@@ -73,7 +73,7 @@ export function CategoriesSection({ homePageData }: { homePageData?: SanityDocum
                   {room.name}
                 </h3>
               </div>
-            </Link>
+            </LocalizedClientLink>
           ))}
         </div>
       </div>

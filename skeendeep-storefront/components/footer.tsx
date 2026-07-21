@@ -94,7 +94,7 @@ export async function Footer() {
             <Link href="/" className="flex items-center mb-4">
               <Image
                 src="/logo.png"
-                alt="NDARA"
+                alt="Skeendeep"
                 width={120}
                 height={48}
                 className="h-10 w-auto"

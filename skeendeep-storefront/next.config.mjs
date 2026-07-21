@@ -11,13 +11,30 @@ const nextConfig = {
       "cdn.sanity.io",
       "medusa-public-images.s3.eu-west-1.amazonaws.com",
       "edzvbldhjtahfxzruynw.supabase.co",
+      'images.unsplash.com',
+      'lh3.googleusercontent.com'
     ],
+    
     remotePatterns: [
       {
         protocol: "https",
         hostname: "**.unsplash.com",
       },
     ],
+  },
+  async redirects() {
+    return [
+      {
+        source: "/about-us",
+        destination: "/about",
+        permanent: true,
+      },
+      {
+        source: "/:countryCode((?!api|_next).{2})/about-us",
+        destination: "/:countryCode/about",
+        permanent: true,
+      },
+    ]
   },
 }
 

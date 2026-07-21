@@ -201,7 +201,7 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
               <Link href="/" className="flex items-center">
                 <Image
                   src="/logo.png"
-                  alt="NDARA"
+                  alt="Skeendeep"
                   width={120}
                   height={48}
                   className="h-10 w-auto"
@@ -230,7 +230,7 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
             <Link href="/" className="flex items-center">
               <Image
                 src="/logo.png"
-                alt="NDARA"
+                alt="Skeendeep"
                 width={100}
                 height={100}
                 className="h-11 w-auto"

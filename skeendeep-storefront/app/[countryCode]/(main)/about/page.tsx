@@ -29,90 +29,73 @@ export default async function AboutPage() {
   const {
     headerSection = {
       title: "About Us",
-      description: "Where interior design expertise meets ecommerce craft, creating a space for intentional choices in furniture and living."
+      description: "Doctor-led medical aesthetics rooted in clinical expertise, skin health, and natural-looking results."
     },
     storySection = {
       sectionLabel: "Our Story",
-      title: "Where Design Expertise Meets Digital Craft",
+      title: "Medical Expertise Meets Aesthetic Care",
       description: [
-        { _key: '1', _type: 'block', children: [{ _key: '1', _type: 'span', text: "NDARA sits at the intersection of interior design expertise and ecommerce craft. We believe furniture isn't just about filling rooms—it's about shaping how you experience space." }] },
-        { _key: '2', _type: 'block', children: [{ _key: '2', _type: 'span', text: "In a world overflowing with options, we create a space for intention. Our curated collection honors materiality, proportion, texture, and restraint, supporting how you actually live rather than chasing fleeting trends." }] },
-        { _key: '3', _type: 'block', children: [{ _key: '3', _type: 'span', text: "Every piece in our collection has been carefully selected to make intentional choices easier. This is furniture that understands the balance between form and function, between aesthetics and lived experience." }] }
+        { _key: '1', _type: 'block', children: [{ _key: '1', _type: 'span', text: "Skeendeep Medical Beauty Clinic is a doctor-led medical aesthetic clinic, run by Dr Adeline Afong (MD, MRCGP, DRCOG, DFFP, DPD)." }] },
+        { _key: '2', _type: 'block', children: [{ _key: '2', _type: 'span', text: "Dr Afong is a skilled general practitioner with over 24 years of experience. She is a fully licensed member of the General Medical Council and a Member of the Royal College of General Practitioners, and is fully licensed in cosmetic dermatology in both the UK and the US." }] },
+        { _key: '3', _type: 'block', children: [{ _key: '3', _type: 'span', text: "Each treatment is personally administered by Dr Afong herself, so you can rest assured that your treatment will be carried out to the highest standard." }] }
       ],
       image: null
     },
     valuesSection = {
-      title: "Our Philosophy",
-      description: "The principles that guide our curation and selection process.",
+      title: "Why Choose Us?",
+      description: "The focus is always on you. We give you a thorough assessment to get to the root of your skin problems and offer medically sound solutions.",
       values: [
         {
-          icon: "Leaf",
-          title: "Materiality",
-          description: "We select pieces that honor the natural character and integrity of their materials, emphasizing texture and quality over trends.",
-        },
-        {
-          icon: "Heart",
-          title: "Proportion",
-          description: "Every piece in our collection demonstrates considered proportions that create balance and harmony in your living spaces.",
+          icon: "Award",
+          title: "Clinical Expertise",
+          description: "Treatments grounded in medical knowledge, safety, and evidence-based practice.",
         },
         {
           icon: "Users",
-          title: "Curation",
-          description: "In a world full of options, we curate intentionally, making it easier to choose pieces that support how you live.",
+          title: "Personalised Care",
+          description: "Every patient receives an individual assessment and treatment plan.",
         },
         {
-          icon: "Award",
-          title: "Restraint",
-          description: "We believe in the power of restraint—selecting pieces that speak quietly but carry weight in their design integrity.",
+          icon: "Leaf",
+          title: "Natural Results",
+          description: "We focus on refined, balanced outcomes that enhance rather than alter.",
+        },
+        {
+          icon: "Heart",
+          title: "Inclusive Skin Expertise",
+          description: "Experienced in treating all skin types, including darker skin tones.",
         },
       ]
     },
     statsSection = {
       stats: [
-        { value: "Expert", label: "Curation Process" },
-        { value: "500+", label: "Carefully Selected Pieces" },
-        { value: "Intentional", label: "Design Choices" },
-        { value: "Global", label: "Design Network" },
+        { value: "30+", label: "Years of Medical Expertise" },
+        { value: "100+", label: "Clients Transformed" },
+        { value: "5/5", label: "Rated by Patients" },
       ]
     },
     teamSection = {
-      title: "Meet Our Team",
-      description: "The passionate people behind every piece.",
+      title: "Doctor-led care, delivered with experience and precision.",
+      description: "Fully licensed in the UK and US, Dr Afong brings decades of medical and aesthetic experience, combining dermatology knowledge with a calm, patient-centred approach trusted by her clients.",
       teamMembers: [
         {
-          name: "Adaeze Okonkwo",
-          role: "Founder & Creative Director",
-          image: null
-        },
-        {
-          name: "Chidi Emenike",
-          role: "Head of Design",
-          image: null
-        },
-        {
-          name: "Ngozi Adeyemi",
-          role: "Master Craftsman",
-          image: null
-        },
-        {
-          name: "Emeka Nwosu",
-          role: "Operations Director",
+          name: "Dr Adeline Afong",
+          role: "Medical Director & Founder",
           image: null
         },
       ]
     },
     sustainabilitySection = {
-      sectionLabel: "Sustainability",
-      title: "Sourced From Sustainable Forests",
+      sectionLabel: "What you can expect at Skeendeep",
+      title: "Why Patients Choose Us",
       description: [
-        { _key: '1', _type: 'block', children: [{ _key: '1', _type: 'span', text: "We care deeply about the origin of our materials. Every piece of wood we use comes from responsibly managed forests certified by international bodies." }] },
-        { _key: '2', _type: 'block', children: [{ _key: '2', _type: 'span', text: "Our commitment extends beyond sourcing. We minimize waste in production, use water-based finishes, and ensure our packaging is recyclable or biodegradable." }] }
+        { _key: '1', _type: 'block', children: [{ _key: '1', _type: 'span', text: "We focus on medically led treatments, clinically proven solutions, and personalised care designed to deliver safe, effective, natural-looking results." }] }
       ],
       image: null,
-      stat1Value: "100%",
-      stat1Label: "Certified Wood",
-      stat2Value: "Zero",
-      stat2Label: "Landfill Waste"
+      stat1Value: "24+",
+      stat1Label: "Years Experience",
+      stat2Value: "GMC Registered",
+      stat2Label: "Fully Licensed Medical Doctor"
     }
   } = data || {}
 
@@ -137,8 +120,8 @@ export default async function AboutPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
               <Image
-                src={storySection.image ? urlFor(storySection.image).width(800).url() : "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=80"}
-                alt="Our workshop"
+                src={storySection.image ? urlFor(storySection.image).width(800).url() : "/images/dr_afong.png"}
+                alt="Dr Adeline Afong at Skeendeep Medical Beauty Clinic"
                 fill
                 className="object-cover"
               />
@@ -220,7 +203,7 @@ export default async function AboutPage() {
               <div key={index} className="text-center w-full sm:w-64">
                 <div className="relative aspect-square rounded-xl overflow-hidden mb-4">
                   <Image
-                    src={member.image ? urlFor(member.image).width(400).url() : "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&q=80"}
+                    src={member.image ? urlFor(member.image).width(400).url() : "/images/dr_afong.png"}
                     alt={member.name}
                     fill
                     className="object-cover"
@@ -235,7 +218,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Sustainability Highlight */}
-      <section className="py-16 md:py-24">
+      <section id="sustainability" className="py-16 md:py-24">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -259,8 +242,8 @@ export default async function AboutPage() {
             </div>
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
               <Image
-                src={sustainabilitySection.image ? urlFor(sustainabilitySection.image).width(800).url() : "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80"}
-                alt="Sustainable forest"
+                src={sustainabilitySection.image ? urlFor(sustainabilitySection.image).width(800).url() : "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&q=80"}
+                alt="Skin care treatment at Skeendeep"
                 fill
                 className="object-cover"
               />
