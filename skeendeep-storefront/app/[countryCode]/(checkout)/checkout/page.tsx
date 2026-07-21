@@ -4,13 +4,23 @@ import PaymentWrapper from "@modules/checkout/components/payment-wrapper"
 import CheckoutForm from "@modules/checkout/templates/checkout-form"
 import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
+import { storeReleaseFlag } from "@/flags"
 
 export const metadata: Metadata = {
   title: "Checkout",
 }
 
-export default async function Checkout() {
+export default async function Checkout(props: {
+  params: Promise<{ countryCode: string }>
+}) {
+  const storeEnabled = await storeReleaseFlag()
+
+  if (!storeEnabled) {
+    const { countryCode } = await props.params
+    redirect(`/${countryCode}`)
+  }
+
   const cart = await retrieveCart()
 
   if (!cart) {

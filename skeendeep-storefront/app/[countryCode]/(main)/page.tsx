@@ -11,6 +11,7 @@ import { getRegion } from "@/lib/data/regions"
 import { client } from "@/lib/sanity/client"
 import { type SanityDocument } from "next-sanity"
 import { type Metadata } from "next"
+import { storeReleaseFlag } from "@/flags"
 
 export const metadata: Metadata = {
   title: 'SkeenDeep Medical Aesthetics Clinic | Experts in Non-invasive Aesthetic Dermatology',
@@ -43,6 +44,7 @@ export default async function Home(props: {
   const params = await props.params
   const { countryCode } = params
 
+  const storeEnabled = await storeReleaseFlag()
   const region = await getRegion(countryCode)
   const { collections } = await listCollections({
     fields: "id, handle, title, products",
@@ -61,10 +63,10 @@ export default async function Home(props: {
 
   return (
     <>
-      <HeroSection homePageData={homePageData} />
+      <HeroSection homePageData={homePageData} storeEnabled={storeEnabled} />
       <MissionStatement homePageData={homePageData} />
       <CustomizeSection homePageData={homePageData} />
-      <ProductsSection collections={collections} region={region} />
+      {storeEnabled && <ProductsSection collections={collections} region={region} />}
       <SustainabilitySection homePageData={homePageData} />
       <CategoriesSection homePageData={homePageData} />
     </>

@@ -12,7 +12,13 @@ const urlFor = (source: SanityImageSource) =>
     ? imageUrlBuilder({ projectId, dataset }).image(source)
     : null
 
-export function HeroSection({ homePageData }: { homePageData?: SanityDocument }) {
+export function HeroSection({
+  homePageData,
+  storeEnabled = false,
+}: {
+  homePageData?: SanityDocument
+  storeEnabled?: boolean
+}) {
   const heroImageUrl = homePageData?.heroImage
     ? urlFor(homePageData.heroImage)?.width(1920).height(1080).url()
     : null
@@ -61,14 +67,16 @@ export function HeroSection({ homePageData }: { homePageData?: SanityDocument })
                       Book an Appointment
                     </Button>
                   </LocalizedClientLink>
-                  <LocalizedClientLink href="/products">
-                    <Button
-                      variant="secondary"
-                      className="hover:cursor-pointer rounded-full px-8 py-6 text-sm font-medium"
-                    >
-                      Explore Products
-                    </Button>
-                  </LocalizedClientLink>
+                  {storeEnabled && (
+                    <LocalizedClientLink href="/products">
+                      <Button
+                        variant="secondary"
+                        className="hover:cursor-pointer rounded-full px-8 py-6 text-sm font-medium"
+                      >
+                        Explore Products
+                      </Button>
+                    </LocalizedClientLink>
+                  )}
                 </div>
               </CardContent>
             </Card>

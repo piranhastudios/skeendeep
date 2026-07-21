@@ -20,7 +20,7 @@ const navLinks = [
   { name: "Testimonials", href: "/testimonials" },
 ]
 
-export function Header() {
+export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -44,6 +44,10 @@ export function Header() {
     if (href === "/") return pathname === "/"
     return pathname.startsWith(href)
   }
+
+  const visibleNavLinks = storeEnabled
+    ? navLinks
+    : navLinks.filter((link) => link.href !== "/products")
 
   // Calculate dynamic tab path based on nav links width
   const updateTabPath = useCallback(() => {
@@ -235,7 +239,7 @@ export function Header() {
 
             {/* Desktop Navigation - Centered under the white tab */}
             <div ref={navLinksRef} className="flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-              {navLinks.map((link) => (
+              {visibleNavLinks.map((link) => (
                 <LocalizedClientLink key={link.name} href={link.href} className={`text-sm transition-colors whitespace-nowrap ${
                       isActive(link.href) 
                         ? "text-foreground font-semibold" 
@@ -258,18 +262,21 @@ export function Header() {
                   </Button>
                 </LocalizedClientLink>
                 {/* Search Button */}
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="text-foreground/70 hover:text-foreground hover:bg-transparent"
-                  onClick={() => setSearchOpen(true)}
-                >
-                  <Search className="h-5 w-5" strokeWidth={1.5} />
-                  <span className="sr-only">Search</span>
-                </Button>
+                {storeEnabled && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-foreground/70 hover:text-foreground hover:bg-transparent"
+                    onClick={() => setSearchOpen(true)}
+                  >
+                    <Search className="h-5 w-5" strokeWidth={1.5} />
+                    <span className="sr-only">Search</span>
+                  </Button>
+                )}
 
               {/* Cart Button with Hover Popup */}
-              <div 
+              {storeEnabled && (
+              <div
                 className="relative"
                 onMouseEnter={handleCartEnter}
                 onMouseLeave={handleCartLeave}
@@ -364,6 +371,7 @@ export function Header() {
                   </div>
                 )}
               </div>
+              )}
 
               {/* Account Button with Dropdown */}
               <div 
@@ -463,7 +471,7 @@ export function Header() {
           {mobileMenuOpen && (
             <div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg z-50 mx-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="flex flex-col gap-1 p-4">
-                {navLinks.map((link) => (
+                {visibleNavLinks.map((link) => (
                   <Link
                     key={link.name}
                     href={link.href}
@@ -478,14 +486,16 @@ export function Header() {
                   </Link>
                 ))}
                 <div className="border-t border-border mt-2 pt-2">
-                  <Link
-                    href="/cart"
-                    className="flex items-center gap-3 text-sm py-2 px-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    Cart ({totalItems})
-                  </Link>
+                  {storeEnabled && (
+                    <Link
+                      href="/cart"
+                      className="flex items-center gap-3 text-sm py-2 px-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <ShoppingBag className="w-4 h-4" />
+                      Cart ({totalItems})
+                    </Link>
+                  )}
                   <Link
                     href={isAuthenticated ? "/account" : "/auth"}
                     className="flex items-center gap-3 text-sm py-2 px-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary"

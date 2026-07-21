@@ -1,4 +1,5 @@
 import React from "react"
+import { VercelToolbar } from '@vercel/toolbar/next';
 import type { Metadata } from 'next'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
@@ -6,12 +7,12 @@ import { CartProvider } from '@/lib/cart-store'
 import { AuthProvider } from '@/lib/auth-store'
 import './globals.css'
 
-const cormorant = Cormorant_Garamond({ 
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-serif"
 });
-const dmSans = DM_Sans({ 
+const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-sans"
@@ -39,12 +40,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const shouldInjectToolbar = process.env.NODE_ENV === 'development';
+
   return (
     <html lang="en">
       <body className={`${dmSans.variable} ${cormorant.variable} font-sans antialiased`}>
         <AuthProvider>
           <CartProvider>
             {children}
+            {shouldInjectToolbar && <VercelToolbar />}
+    
           </CartProvider>
         </AuthProvider>
         <Analytics />
