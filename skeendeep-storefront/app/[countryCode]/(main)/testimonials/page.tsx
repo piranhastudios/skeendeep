@@ -58,7 +58,6 @@ const defaultTestimonials = googleReviews
 const businessData = (reviewsData as any).data?.[0]
 const defaultStats = [
   { value: businessData?.rating?.toString() || "5.0", label: "Average Rating" },
-  { value: businessData?.reviews?.toString() || "13", label: "Total Reviews" },
   { value: "100%", label: "5-Star Reviews" },
   { value: "Verified", label: "Google Reviews" },
 ]
@@ -102,7 +101,7 @@ export default async function TestimonialsPage() {
       {/* Stats Section */}
       <section className="py-12 border-b border-border">
         <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {stats.map((stat: any) => (
               <div key={stat.label} className="text-center">
                 <span className="font-serif text-3xl md:text-4xl font-medium text-foreground">
