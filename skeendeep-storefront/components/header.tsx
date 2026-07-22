@@ -27,6 +27,7 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
   const [cartHovered, setCartHovered] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
   const [tabPath, setTabPath] = useState("")
+  const [isScrolled, setIsScrolled] = useState(false)
   
   const searchInputRef = useRef<HTMLInputElement>(null)
   const cartTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -114,6 +115,15 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
     }
   }, [updateTabPath])
 
+  // Swap the transparent floating tab for a solid bar once the page scrolls, so
+  // content can't show through the header's transparent areas
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
   // Focus search input when opened
   useEffect(() => {
     if (searchOpen && searchInputRef.current) {
@@ -179,13 +189,18 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
 
   return (
     <>
-      <header ref={headerRef} className="sticky top-0 left-0 right-0 z-50">
+      <header
+        ref={headerRef}
+        className={`sticky top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+          isScrolled ? "bg-white shadow-sm" : ""
+        }`}
+      >
         {/* Opaque cap behind the Dynamic Island / status bar. Collapses to 0px on
             devices without a top safe-area inset, so nothing changes elsewhere. */}
         <div className="h-[env(safe-area-inset-top)] bg-white" />
 
         {/* Dynamic curved tab that wraps content - works for both mobile and desktop */}
-        {tabPath && (
+        {!isScrolled && tabPath && (
           <svg
             className="absolute inset-x-0 top-[env(safe-area-inset-top)] w-full pointer-events-none"
             viewBox={`0 0 ${headerRef.current?.getBoundingClientRect().width || 1440} ${headerRef.current && headerRef.current.getBoundingClientRect().width < 768 ? 70 : 56}`}
@@ -197,7 +212,7 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
           </svg>
         )}
 
-        <div className="mx-auto max-w-7xl px-4 md:px-6 pt-3 md:pt-4">
+        <div className="mx-auto max-w-7xl px-4 md:px-6 pt-3 pb-3 md:pt-4 md:pb-4">
           {/* Mobile Navigation */}
           <nav className="flex md:hidden items-center justify-between relative">
             {/* Centered Logo on mobile */}

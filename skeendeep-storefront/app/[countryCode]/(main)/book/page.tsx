@@ -5,8 +5,8 @@ import Script from "next/script"
 import { useState } from "react"
 
 const APPOINTMENT_TYPES = [
-  { id: "96099928", label: "Aesthetics Consultation" },
-  { id: "21013705", label: "Dermatology Consultation" },
+  { id: "96099928", short: "Aesthetics", label: "Aesthetics Consultation" },
+  { id: "21013705", short: "Dermatology", label: "Dermatology Consultation" },
 ] as const
 
 export default function BookingPage() {
@@ -31,6 +31,7 @@ export default function BookingPage() {
               type="button"
               onClick={() => selectType(type.id)}
               aria-pressed={appointmentType === type.id}
+              aria-label={type.label}
               className={cn(
                 "flex-1 whitespace-nowrap rounded-full px-6 py-2.5 text-sm font-medium transition-colors",
                 appointmentType === type.id
@@ -38,7 +39,8 @@ export default function BookingPage() {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {type.label}
+              <span className="sm:hidden">{type.short}</span>
+              <span className="hidden sm:inline">{type.label}</span>
             </button>
           ))}
         </div>
