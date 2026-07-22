@@ -1,6 +1,6 @@
 import React from "react"
 import { VercelToolbar } from '@vercel/toolbar/next';
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CartProvider } from '@/lib/cart-store'
@@ -33,6 +33,15 @@ export const metadata: Metadata = {
     ],
     apple: '/icon-2.svg',
   },
+}
+
+// viewportFit: 'cover' lets the page own the full screen on notched/Dynamic Island
+// devices, which is what makes env(safe-area-inset-*) resolve to non-zero values.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#ffffff',
 }
 
 export default function RootLayout({

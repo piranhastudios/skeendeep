@@ -10,7 +10,7 @@ export default function CheckoutLayout({
 }) {
   return (
     <div className="min-h-screen bg-background">
-      <div className="border-b border-border bg-background">
+      <div className="border-b border-border bg-background pt-[env(safe-area-inset-top)]">
         <div className="container mx-auto px-6 py-4">
           <nav className="flex items-center justify-between">
             <Link

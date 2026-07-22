@@ -216,9 +216,9 @@ export default async function ServicesPage() {
 											{service.features.map((feature: string) => (
 												<li
 													key={feature}
-													className="flex items-center gap-2 text-sm text-foreground"
+													className="flex items-start gap-2 text-sm text-foreground"
 												>
-													<div className="w-1.5 h-1.5 rounded-full bg-accent" />
+													<div className="w-1.5 h-1.5 mt-[7px] rounded-full bg-accent flex-shrink-0" />
 													{feature}
 												</li>
 											))}

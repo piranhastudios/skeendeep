@@ -180,10 +180,14 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
   return (
     <>
       <header ref={headerRef} className="sticky top-0 left-0 right-0 z-50">
+        {/* Opaque cap behind the Dynamic Island / status bar. Collapses to 0px on
+            devices without a top safe-area inset, so nothing changes elsewhere. */}
+        <div className="h-[env(safe-area-inset-top)] bg-white" />
+
         {/* Dynamic curved tab that wraps content - works for both mobile and desktop */}
         {tabPath && (
-          <svg 
-            className="absolute inset-x-0 top-0 w-full pointer-events-none"
+          <svg
+            className="absolute inset-x-0 top-[env(safe-area-inset-top)] w-full pointer-events-none"
             viewBox={`0 0 ${headerRef.current?.getBoundingClientRect().width || 1440} ${headerRef.current && headerRef.current.getBoundingClientRect().width < 768 ? 70 : 56}`}
             preserveAspectRatio="none"
             fill="white"
