@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import LocalizedClientLink from "@/components/common/localized-client-link"
-import { signOut } from "@/lib/data/customer"
+import { useAuth } from "@/lib/auth-store"
 import { useState, useEffect } from "react"
 import { listOrders } from "@/lib/data/orders"
 import { Calendar } from "@medusajs/icons"
@@ -18,6 +18,7 @@ interface AccountDashboardProps {
 const AccountDashboard = ({ customer }: AccountDashboardProps) => {
   const [orders, setOrders] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const { logout } = useAuth()
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -82,7 +83,7 @@ const AccountDashboard = ({ customer }: AccountDashboardProps) => {
 
   const handleSignOut = async () => {
     try {
-      await signOut()
+      await logout()
       window.location.href = "/"
     } catch (error) {
       console.error("Error signing out:", error)

@@ -1,7 +1,8 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from "react"
 import { HttpTypes } from "@medusajs/types"
+import posthog from "posthog-js"
 import { retrieveCustomer } from "@/lib/data/customer"
 import { sdk } from "./config"
 
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [customer, setCustomer] = useState<HttpTypes.StoreCustomer | null>(null)
   const [loading, setLoading] = useState(true)
+  const identifiedUserId = useRef<string | null>(null)
 
   const updateUserState = useCallback((customerData: HttpTypes.StoreCustomer) => {
     setCustomer(customerData)
@@ -59,6 +61,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setCustomer(null)
     }
   }, [updateUserState])
+
+  useEffect(() => {
+    if (user?.id && identifiedUserId.current !== user.id) {
+      if (identifiedUserId.current) {
+        posthog.reset()
+      }
+
+      posthog.identify(user.id, {
+        email: user.email,
+        name: user.name,
+      })
+      identifiedUserId.current = user.id
+    } else if (!user && identifiedUserId.current) {
+      posthog.reset()
+      identifiedUserId.current = null
+    }
+  }, [user])
 
   // Check authentication status on mount
   useEffect(() => {
@@ -179,12 +198,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         credentials: 'include',
       })
-
-      setUser(null)
-      setCustomer(null)
     } catch (error) {
       console.error("Logout error:", error)
-      // Still clear local state even if API call fails
+    } finally {
+      posthog.reset()
+      identifiedUserId.current = null
       setUser(null)
       setCustomer(null)
     }

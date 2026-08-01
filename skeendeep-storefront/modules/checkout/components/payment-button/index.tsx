@@ -7,6 +7,7 @@ import { Button } from "@medusajs/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
+import posthog from "posthog-js"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -37,7 +38,11 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
       )
     case isManual(paymentSession?.provider_id):
       return (
-        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+        <ManualTestPaymentButton
+          cart={cart}
+          notReady={notReady}
+          data-testid={dataTestId}
+        />
       )
     default:
       return <Button disabled>Select a payment method</Button>
@@ -57,6 +62,13 @@ const StripePaymentButton = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const onPaymentCompleted = async () => {
+    posthog.capture("checkout_order_completed", {
+      payment_provider: "stripe",
+      currency: cart.currency_code,
+      cart_total: cart.total,
+      item_count: cart.items?.reduce((total, item) => total + item.quantity, 0),
+    })
+
     await placeOrder()
       .catch((err) => {
         setErrorMessage(err.message)
@@ -150,11 +162,24 @@ const StripePaymentButton = ({
   )
 }
 
-const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
+const ManualTestPaymentButton = ({
+  cart,
+  notReady,
+}: {
+  cart: HttpTypes.StoreCart
+  notReady: boolean
+}) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const onPaymentCompleted = async () => {
+    posthog.capture("checkout_order_completed", {
+      payment_provider: "manual",
+      currency: cart.currency_code,
+      cart_total: cart.total,
+      item_count: cart.items?.reduce((total, item) => total + item.quantity, 0),
+    })
+
     await placeOrder()
       .catch((err) => {
         setErrorMessage(err.message)
