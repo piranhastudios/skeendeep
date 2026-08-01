@@ -9,6 +9,7 @@ import { HttpTypes } from "@medusajs/types"
 import Trash from "@modules/common/icons/trash"
 import ErrorMessage from "../error-message"
 import { SubmitButton } from "../submit-button"
+import posthog from "posthog-js"
 
 type DiscountCodeProps = {
   cart: HttpTypes.StoreCart & {
@@ -29,6 +30,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
     await applyPromotions(
       validPromotions.filter((p) => p.code !== undefined).map((p) => p.code!)
     )
+    posthog.capture("promotion_code_removed")
   }
 
   const addPromotionCode = async (formData: FormData) => {
@@ -46,6 +48,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
 
     try {
       await applyPromotions(codes)
+      posthog.capture("promotion_code_applied")
     } catch (e: any) {
       setErrorMessage(e.message)
     }

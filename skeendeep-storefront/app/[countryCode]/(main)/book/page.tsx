@@ -3,6 +3,7 @@ import Spinner from "@/components/common/icons/spinner"
 import { cn } from "@/lib/utils"
 import Script from "next/script"
 import { useState } from "react"
+import posthog from "posthog-js"
 
 const APPOINTMENT_TYPES = [
   { id: "96099928", short: "Aesthetics", label: "Aesthetics Consultation" },
@@ -19,6 +20,9 @@ export default function BookingPage() {
     if (id === appointmentType) return
     setLoading(true)
     setAppointmentType(id)
+    posthog.capture("appointment_type_selected", {
+      appointment_type: APPOINTMENT_TYPES.find((type) => type.id === id)?.short,
+    })
   }
 
   return (

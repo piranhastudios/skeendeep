@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useCallback, useEffect, type React
 import { HttpTypes } from "@medusajs/types"
 import { addToCart, updateLineItem, deleteLineItem, retrieveCart } from "@/lib/data/cart"
 import { usePathname } from "next/navigation"
+import posthog from "posthog-js"
 
 export interface CartItem {
   id: string
@@ -111,6 +112,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
             },
           }
           setLastAddedItem(cartItem)
+          posthog.capture("cart_item_added", {
+            product_id: addedItem.product_id,
+            variant_id: addedItem.variant_id,
+            quantity,
+            currency: updatedCart.region?.currency_code,
+            unit_price: addedItem.unit_price,
+          })
         }
       }
     } catch (error) {
