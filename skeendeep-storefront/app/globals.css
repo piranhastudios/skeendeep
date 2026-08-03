@@ -137,13 +137,18 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* Site canvas is white so the area behind the transparent menubar reads white
+       on initial load. Section fills still use bg-background (warm cream). */
+    @apply bg-white text-foreground;
   }
 }
 
 html {
   padding: 0;
   margin: 0;
+  /* Safari paints status-bar / overscroll edge regions with the root background in
+     several browser-chrome states — keep it white to match the site canvas. */
+  background-color: #ffffff;
 }
 
 /* Utilities for hiding scrollbars */

@@ -27,7 +27,17 @@ export function HeroSection({
   const description = homePageData?.heroDescription || "NDARA brings together interior design thinking and ecommerce craft to create a considered way of furnishing a home."
 
   return (
-    <section className="bg-white px-2 pb-2 md:px-4 md:pb-4 -mt-8 md:-mt-12">
+    <section
+      className="bg-white px-2 pb-2 md:px-4 md:pb-4"
+      // Pull the hero up by exactly the measured header height (--header-h, published
+      // by the Header) so the image's top rounded corners sit right at the viewport
+      // top — corners stay visible, with no white gap above. Falls back to an
+      // approximation until the header has measured itself.
+      style={{
+        marginTop:
+          "calc(-1 * var(--header-h, calc(env(safe-area-inset-top) + 4rem)))",
+      }}
+    >
       <div className="relative min-h-[85vh] md:min-h-screen rounded-2xl md:rounded-3xl overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">

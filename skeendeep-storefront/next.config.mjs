@@ -1,7 +1,17 @@
 import createWithVercelToolbar from '@vercel/toolbar/plugins/next';
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Pin Turbopack's workspace root to this project. Without this, the stray
+  // yarn.lock in the parent folder makes Next infer the wrong root, which breaks
+  // file-watching — i.e. Fast Refresh (hot reload) and the dev-tools overlay.
+  turbopack: {
+    root: __dirname,
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

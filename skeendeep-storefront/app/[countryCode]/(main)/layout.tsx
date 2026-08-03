@@ -10,7 +10,7 @@ export default async function Layout({
     const storeEnabled = await storeReleaseFlag()
 
     return (
-        <main className="min-h-screen bg-background">
+        <main className="min-h-screen bg-white">
             <Header storeEnabled={storeEnabled} />
             {children}
             <Footer />

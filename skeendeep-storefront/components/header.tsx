@@ -57,6 +57,13 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
     const headerRect = headerRef.current.getBoundingClientRect()
     const headerWidth = headerRect.width
     const isMobile = headerWidth < 768
+
+    // Publish the real header height so the hero can pull itself up exactly this
+    // much — its top rounded corners then land precisely at the viewport top.
+    document.documentElement.style.setProperty(
+      "--header-h",
+      `${headerRect.height}px`
+    )
     
     // Get the appropriate element for measurement
     const targetRef = isMobile ? mobileLogoRef.current : navLinksRef.current
@@ -72,8 +79,8 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
     const padding = isMobile ? 30 : 40
     const curveWidth = isMobile ? 40 : 60
     const tabHeight = isMobile ? 60 : 52
-    const topOffset = 8
-    const midHeight = isMobile ? 24 : 28
+    const topOffset = 14
+    const midHeight = isMobile ? 30 : 34
     
     // Calculate key points for the swooping curve
     const tabLeft = targetCenter - targetHalfWidth - padding
@@ -115,8 +122,37 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
     }
   }, [updateTabPath])
 
-  // Swap the transparent floating tab for a solid bar once the page scrolls, so
-  // content can't show through the header's transparent areas
+  // Dev aid: append ?debugsafe to the URL to overlay live safe-area/viewport numbers,
+  // for diagnosing iOS Safari status-bar/env() behavior on a real device.
+  const [debugInfo, setDebugInfo] = useState<string | null>(null)
+  useEffect(() => {
+    if (!window.location.search.includes("debugsafe")) return
+    const probe = document.createElement("div")
+    probe.style.cssText =
+      "position:fixed;top:0;height:env(safe-area-inset-top);width:0;visibility:hidden;pointer-events:none"
+    document.body.appendChild(probe)
+    const update = () => {
+      const vv = window.visualViewport
+      setDebugInfo(
+        `envTop:${probe.getBoundingClientRect().height.toFixed(0)}px scrollY:${window.scrollY.toFixed(0)} innerH:${window.innerHeight} screenH:${screen.height}${
+          vv ? ` vvOff:${vv.offsetTop.toFixed(0)} vvH:${vv.height.toFixed(0)}` : ""
+        }`
+      )
+    }
+    update()
+    const id = setInterval(update, 500)
+    window.addEventListener("scroll", update, { passive: true })
+    window.visualViewport?.addEventListener("resize", update)
+    return () => {
+      probe.remove()
+      clearInterval(id)
+      window.removeEventListener("scroll", update)
+      window.visualViewport?.removeEventListener("resize", update)
+    }
+  }, [])
+
+  // On scroll, only the strip above the nav (safe-area/status-bar area) turns solid
+  // white — the elliptical nav tab itself keeps floating
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 8)
     onScroll()
@@ -191,16 +227,42 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
     <>
       <header
         ref={headerRef}
-        className={`sticky top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-          isScrolled ? "bg-white shadow-sm" : ""
-        }`}
+        className="sticky top-0 left-0 right-0 z-50"
       >
-        {/* Opaque cap behind the Dynamic Island / status bar. Collapses to 0px on
-            devices without a top safe-area inset, so nothing changes elsewhere. */}
-        <div className="h-[env(safe-area-inset-top)] bg-white" />
+        {/* Strip above the nav (Dynamic Island / status-bar area). Transparent at the
+            top of the page so the hero bleeds through; turns solid white on scroll so
+            page content can't show behind the status bar. Collapses to 0px with no inset. */}
+        <div
+          className={`h-[env(safe-area-inset-top)] transition-colors duration-300 ${
+            isScrolled ? "bg-white shadow-sm" : ""
+          }`}
+        />
+        {/* Overshoot cover: iOS Safari can report env(safe-area-inset-top) as 0 in its
+            collapsed-chrome state while still sliding the page under the status icons,
+            leaving the strip above 0px tall. This paints white upward past the header's
+            top edge on scroll; off-screen (invisible) whenever insets behave or on desktop. */}
+        <div
+          aria-hidden
+          className={`absolute bottom-full left-0 right-0 h-24 transition-colors duration-300 ${
+            isScrolled ? "bg-white" : ""
+          }`}
+        />
+        {/* Guaranteed status-bar cover (mobile only): when Safari lays the page out
+            edge-to-edge but still reports env() as 0, the two layers above are both 0px /
+            off-screen. This band doesn't trust env(): on scroll it paints the header's top
+            max(env, 60px) white, which covers the status icons in that geometry too. The
+            ellipse SVG and nav render after it, so they paint on top. */}
+        <div
+          aria-hidden
+          className={`md:hidden absolute top-0 left-0 right-0 h-[max(env(safe-area-inset-top),3.75rem)] transition-colors duration-300 ${
+            isScrolled ? "bg-white" : ""
+          }`}
+        />
 
-        {/* Dynamic curved tab that wraps content - works for both mobile and desktop */}
-        {!isScrolled && tabPath && (
+        {/* Dynamic curved elliptical tab that wraps the nav content — always shown, on
+            BOTH mobile and desktop, so the nav keeps its floating pill look even on
+            scroll (we no longer turn the whole nav solid). */}
+        {tabPath && (
           <svg
             className="absolute inset-x-0 top-[env(safe-area-inset-top)] w-full pointer-events-none"
             viewBox={`0 0 ${headerRef.current?.getBoundingClientRect().width || 1440} ${headerRef.current && headerRef.current.getBoundingClientRect().width < 768 ? 70 : 56}`}
@@ -652,6 +714,13 @@ export function Header({ storeEnabled = false }: { storeEnabled?: boolean }) {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Dev-only safe-area debug readout (?debugsafe) */}
+      {debugInfo && (
+        <div className="fixed bottom-24 left-2 z-[999] rounded bg-black/80 px-2 py-1 font-mono text-[10px] text-white pointer-events-none">
+          {debugInfo}
         </div>
       )}
 
