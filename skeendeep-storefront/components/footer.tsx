@@ -4,7 +4,6 @@ import { Facebook, Instagram, Youtube, Linkedin, Twitter, Github, Twitch } from 
 import { client } from "@/lib/sanity/client"
 import { type SanityDocument } from "next-sanity"
 import LocalizedClientLink from "./common/localized-client-link"
-import { storeReleaseFlag } from "@/flags"
 
 const FOOTER_QUERY = `*[_type == "footer"][0]{
   brandTagline,
@@ -68,7 +67,6 @@ const defaultSocialLinks = [
 ]
 
 export async function Footer() {
-  const storeEnabled = await storeReleaseFlag()
   const [footerData, legalLinks] = await Promise.all([
     client.fetch<SanityDocument>(FOOTER_QUERY, {}, { next: { revalidate: 3600 } }),
     client.fetch<any[]>(LEGAL_LINKS_QUERY, {}, { next: { revalidate: 3600 } })
@@ -88,7 +86,7 @@ export async function Footer() {
   return (
     <footer className="bg-background border-t border-border">
       <div className="container mx-auto px-6 py-16">
-        <div className={`grid grid-cols-2 ${storeEnabled ? "md:grid-cols-6" : "md:grid-cols-5"} gap-8`}>
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
           {/* Brand */}
           <div className="col-span-2">
             <Link href="/" className="flex items-center mb-4">
@@ -106,20 +104,18 @@ export async function Footer() {
           </div>
 
           {/* Links */}
-          {storeEnabled && (
-            <div>
-              <h4 className="font-medium text-foreground mb-4 text-sm">Product</h4>
-              <ul className="space-y-3">
-                {productLinks.map((link: any) => (
-                  <li key={link.name}>
-                    <Link href={link.href} className="text-muted-foreground hover:text-foreground text-sm transition-colors">
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <div>
+            <h4 className="font-medium text-foreground mb-4 text-sm">Product</h4>
+            <ul className="space-y-3">
+              {productLinks.map((link: any) => (
+                <li key={link.name}>
+                  <Link href={link.href} className="text-muted-foreground hover:text-foreground text-sm transition-colors">
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div>
             <h4 className="font-medium text-foreground mb-4 text-sm">Services</h4>

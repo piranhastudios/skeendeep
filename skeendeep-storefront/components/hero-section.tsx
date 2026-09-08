@@ -14,10 +14,8 @@ const urlFor = (source: SanityImageSource) =>
 
 export function HeroSection({
   homePageData,
-  storeEnabled = false,
 }: {
   homePageData?: SanityDocument
-  storeEnabled?: boolean
 }) {
   const heroImageUrl = homePageData?.heroImage
     ? urlFor(homePageData.heroImage)?.width(1920).height(1080).url()
@@ -77,16 +75,14 @@ export function HeroSection({
                       Book an Appointment
                     </Button>
                   </LocalizedClientLink>
-                  {storeEnabled && (
-                    <LocalizedClientLink href="/products">
-                      <Button
-                        variant="secondary"
-                        className="hover:cursor-pointer rounded-full px-8 py-6 text-sm font-medium"
-                      >
-                        Explore Products
-                      </Button>
-                    </LocalizedClientLink>
-                  )}
+                  <LocalizedClientLink href="/products">
+                    <Button
+                      variant="secondary"
+                      className="hover:cursor-pointer rounded-full px-8 py-6 text-sm font-medium"
+                    >
+                      Explore Products
+                    </Button>
+                  </LocalizedClientLink>
                 </div>
               </CardContent>
             </Card>

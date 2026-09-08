@@ -48,11 +48,6 @@
   dependencies:
     tslib "^2.0.0"
 
-"@edge-runtime/cookies@^5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@edge-runtime/cookies/-/cookies-5.0.2.tgz#c1ddd8cc740bdd5fcd9b482eddb33f4c096d4d2a"
-  integrity sha512-Sd8LcWpZk/SWEeKGE8LT6gMm5MGfX/wm+GPnh1eBEtCpya3vYqn37wYknwAHw92ONoyyREl1hJwxV/Qx2DWNOg==
-
 "@emnapi/core@^1.8.1":
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/@emnapi/core/-/core-1.10.0.tgz#380ccc8f2412ea22d1d972df7f8ee23a3b9c7467"
@@ -2643,14 +2638,6 @@ find-up@5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-flags@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/flags/-/flags-4.2.1.tgz#407a2c596600c4d053c67d2962cb338dba98dca7"
-  integrity sha512-SYR/xy3ZHGC+fvxdxC/ciYg2/G3Wv1HVGTWaN4okUhnVvCQa0t56V5TeasQVVbZRRt2mSQ3JnrSwXMX1NEwS6w==
-  dependencies:
-    "@edge-runtime/cookies" "^5.0.2"
-    jose "^5.10.0"
-
 follow-redirects@^1.0.0:
   version "1.16.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.16.0.tgz#28474a159d3b9d11ef62050a14ed60e4df6d61bc"
@@ -2898,11 +2885,6 @@ jiti@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-2.6.1.tgz#178ef2fc9a1a594248c20627cd820187a4d78d92"
   integrity sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==
-
-jose@^5.10.0:
-  version "5.10.0"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-5.10.0.tgz#c37346a099d6467c401351a9a0c2161e0f52c4be"
-  integrity sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==
 
 "js-tokens@^3.0.0 || ^4.0.0":
   version "4.0.0"
