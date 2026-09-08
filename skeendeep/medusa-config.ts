@@ -3,11 +3,15 @@ import { loadEnv, defineConfig, Modules, ContainerRegistrationKeys } from '@medu
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 module.exports = defineConfig({
-  // comment out to enable the admin interface on localhost
-   admin: {
+  admin: {
     disable: process.env.ADMIN_DISABLED === "true" || false,
-    backendUrl: process.env.MEDUSA_BACKEND_URL || "http://localhost:9000",
-    path: `/`,
+    // Empty string makes the admin bundle resolve the API against
+    // window.location.origin, so it always talks to whichever host serves it.
+    // The image is built without MEDUSA_BACKEND_URL, so baking that variable in
+    // pinned every build to http://localhost:9000; same-origin also keeps the
+    // session cookie first-party, which Safari requires.
+    backendUrl: "",
+    path: `/app`,
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
