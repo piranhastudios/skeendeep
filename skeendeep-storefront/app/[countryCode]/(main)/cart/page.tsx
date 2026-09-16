@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { useCart } from "@/lib/cart-store"
+import { convertToLocale } from "@/lib/util/money"
 import LocalizedClientLink from "@/components/common/localized-client-link"
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, totalPrice } = useCart()
+  const { items, updateQuantity, removeItem, totalPrice, cart } = useCart()
 
+  const currency_code = cart?.currency_code || items[0]?.currency_code || "USD"
   const shipping = items.length > 0 ? 25.00 : 0
   const tax = totalPrice * 0.08
   const total = totalPrice + shipping + tax
@@ -130,7 +132,7 @@ export default function CartPage() {
 
                       {/* Price */}
                       <span className="font-semibold text-foreground">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {convertToLocale({ amount: item.price * item.quantity, currency_code })}
                       </span>
                     </div>
                   </div>
@@ -148,21 +150,21 @@ export default function CartPage() {
                 <div className="space-y-4 mb-6">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span className="text-foreground">${totalPrice.toFixed(2)}</span>
+                    <span className="text-foreground">{convertToLocale({ amount: totalPrice, currency_code })}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>
-                    <span className="text-foreground">${shipping.toFixed(2)}</span>
+                    <span className="text-foreground">{convertToLocale({ amount: shipping, currency_code })}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Tax</span>
-                    <span className="text-foreground">${tax.toFixed(2)}</span>
+                    <span className="text-foreground">{convertToLocale({ amount: tax, currency_code })}</span>
                   </div>
                   <div className="border-t border-border pt-4">
                     <div className="flex items-center justify-between">
                       <span className="font-semibold text-foreground">Total</span>
                       <span className="font-semibold text-lg text-foreground">
-                        ${total.toFixed(2)}
+                        {convertToLocale({ amount: total, currency_code })}
                       </span>
                     </div>
                   </div>

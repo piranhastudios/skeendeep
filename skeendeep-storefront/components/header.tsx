@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { useCart } from "@/lib/cart-store"
 import { useAuth } from "@/lib/auth-store"
 import { products } from "@/lib/products"
+import { convertToLocale } from "@/lib/util/money"
 import LocalizedClientLink from "@/components/common/localized-client-link"
 
 const navLinks = [
@@ -38,7 +39,7 @@ export function Header() {
   
   const pathname = usePathname()
   const router = useRouter()
-  const { items, totalItems, totalPrice, updateQuantity, removeItem } = useCart()
+  const { items, totalItems, totalPrice, updateQuantity, removeItem, cart } = useCart()
   const { user, isAuthenticated, logout } = useAuth()
 
   const isActive = (href: string) => {
@@ -402,7 +403,7 @@ export function Header() {
                                 {item.variant?.title && (
                                   <p className="text-xs text-muted-foreground">{item.variant.title}</p>
                                 )}
-                                <p className="text-xs text-muted-foreground mt-0.5">${item.price.toFixed(2)}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">{convertToLocale({ amount: item.price, currency_code: item.currency_code || "USD" })}</p>
                                 <div className="flex items-center gap-2 mt-2">
                                   <button
                                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -431,7 +432,7 @@ export function Header() {
                         <div className="p-3 bg-secondary/50 border-t border-border">
                           <div className="flex items-center justify-between mb-3">
                             <span className="text-sm text-muted-foreground">Subtotal</span>
-                            <span className="font-semibold">${totalPrice.toFixed(2)}</span>
+                            <span className="font-semibold">{convertToLocale({ amount: totalPrice, currency_code: cart?.currency_code || "USD" })}</span>
                           </div>
                           <Button 
                             className="w-full rounded-full bg-foreground text-background hover:bg-foreground/90"
