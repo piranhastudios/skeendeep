@@ -77,9 +77,9 @@ export default async function TestimonialsPage() {
 
   const stats = pageData?.stats || defaultStats
   const pageTitle = pageData?.title || "Testimonials"
-  const headerDescription = pageData?.headerDescription || "Hear from our customers about their experience with NDARA and how our furniture has transformed their spaces."
+  const headerDescription = pageData?.headerDescription || "Hear from real patients about their experience with SkeenDeep Medical Aesthetics Clinic and how our treatments and skincare have helped their skin."
   const ctaTitle = pageData?.ctaTitle || "Join Our Community"
-  const ctaDescription = pageData?.ctaDescription || "Become part of the NDARA family. Share your experience and inspire others to create beautiful living spaces."
+  const ctaDescription = pageData?.ctaDescription || "Become part of the SkeenDeep family. Share your experience and inspire others to care for their skin."
 
   const featuredTestimonials = testimonials.filter((t: any) => t.featured)
   const regularTestimonials = testimonials.filter((t: any) => !t.featured)

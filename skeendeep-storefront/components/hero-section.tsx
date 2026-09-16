@@ -21,8 +21,8 @@ export function HeroSection({
     ? urlFor(homePageData.heroImage)?.width(1920).height(1080).url()
     : null
 
-  const heading = homePageData?.heroHeading || "SHAPING SPACES,\nNOT FILLING THEM"
-  const description = homePageData?.heroDescription || "NDARA brings together interior design thinking and ecommerce craft to create a considered way of furnishing a home."
+  const heading = homePageData?.heroHeading || "EXPERT AESTHETIC\nDERMATOLOGY"
+  const description = homePageData?.heroDescription || "SkeenDeep Medical Aesthetics Clinic — professional-grade skincare and non-invasive aesthetic treatments, delivered by medical experts."
 
   return (
     <section
@@ -40,8 +40,8 @@ export function HeroSection({
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src={heroImageUrl || "/images/image.jpg"}
-            alt="Luxurious brown velvet sofa in a warm, earthy living space"
+            src={heroImageUrl || "/img_9385_538_kb.jpg"}
+            alt="SkeenDeep Medical Aesthetics Clinic"
             fill
             className="object-cover object-center"
             priority

@@ -38,7 +38,7 @@ const Review = ({ cart }: { cart: any }) => {
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                 By clicking the Place Order button, you confirm that you have
                 read, understand and accept our Terms of Use, Terms of Sale and
-                Returns Policy and acknowledge that you have read NDARA&apos;s Privacy Policy.
+                Returns Policy and acknowledge that you have read SkeenDeep&apos;s Privacy Policy.
               </p>
             </div>
           </div>

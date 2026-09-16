@@ -3,8 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Star, Heart, Minus, Plus, ChevronRight, Truck, Shield, RotateCcw } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Heart, ChevronRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -12,6 +11,7 @@ import { HttpTypes } from "@medusajs/types"
 import { convertToLocale } from "@/lib/util/money"
 import LocalizedClientLink from "@/components/common/localized-client-link"
 import ProductActions from "@/components/product-actions"
+import { useWishlist, type WishlistItem } from "@/lib/wishlist-store"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -27,8 +27,20 @@ export default function ProductTemplate({
   images
 }: ProductTemplateProps) {
   const [selectedImage, setSelectedImage] = useState(0)
-  const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState<"description" | "details" | "reviews">("description")
+
+  const { isInWishlist, toggleWishlist } = useWishlist()
+  const defaultVariant = product.variants?.[0]
+  const item: WishlistItem = {
+    id: product.id,
+    variantId: defaultVariant?.id ?? product.id,
+    handle: product.handle ?? "",
+    name: product.title,
+    thumbnail: product.thumbnail ?? null,
+    price: defaultVariant?.calculated_price?.calculated_amount ?? 0,
+    currency_code: defaultVariant?.calculated_price?.currency_code || region.currency_code,
+  }
+  const inWishlist = isInWishlist(item.variantId)
 
   const displayImages = images?.length > 0 ? images : product.images || []
 
@@ -66,9 +78,10 @@ export default function ProductTemplate({
                 />
                 <button 
                   className="absolute top-4 right-4 w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
-                  aria-label="Add to wishlist"
+                  aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+                  onClick={() => toggleWishlist(item)}
                 >
-                  <Heart className="w-6 h-6 text-foreground" />
+                  <Heart className={`w-6 h-6 ${inWishlist ? "fill-accent text-accent" : "text-foreground"}`} />
                 </button>
               </div>
               {displayImages.length > 1 && (
@@ -126,23 +139,9 @@ export default function ProductTemplate({
                 <ProductActions product={product} region={region} />
               </div>
 
-              {/* Benefits */}
-              <div className="grid grid-cols-3 gap-4 mt-10 pt-10 border-t border-border">
-                <div className="text-center">
-                  <Truck className="w-6 h-6 mx-auto text-foreground" />
-                  <span className="text-xs text-muted-foreground mt-2 block">Free Shipping</span>
-                </div>
-                <div className="text-center">
-                  <Shield className="w-6 h-6 mx-auto text-foreground" />
-                  <span className="text-xs text-muted-foreground mt-2 block">2 Year Warranty</span>
-                </div>
-                <div className="text-center">
-                  <RotateCcw className="w-6 h-6 mx-auto text-foreground" />
-                  <span className="text-xs text-muted-foreground mt-2 block">30 Day Returns</span>
-                </div>
-              </div>
-
-              <p className="text-xs text-muted-foreground mt-6">SKU: {product.handle}</p>
+              {defaultVariant?.sku && (
+                <p className="text-xs text-muted-foreground mt-6">SKU: {defaultVariant.sku}</p>
+              )}
             </div>
           </div>
         </div>
@@ -243,12 +242,6 @@ export default function ProductTemplate({
               <div>
                 <div className="text-center py-12">
                   <p className="text-muted-foreground">No reviews yet.</p>
-                  <Button 
-                    variant="outline" 
-                    className="mt-4 rounded-full border-foreground/20 hover:bg-foreground hover:text-background bg-transparent"
-                  >
-                    Write a Review
-                  </Button>
                 </div>
               </div>
             )}

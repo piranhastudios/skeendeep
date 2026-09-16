@@ -204,9 +204,9 @@ const AccountDashboard = ({ customer }: AccountDashboardProps) => {
                   <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="font-medium text-foreground mb-2">No orders yet</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Start exploring our curated collection
+                    Start exploring our treatments and skincare
                   </p>
-                  <LocalizedClientLink href="/store">
+                  <LocalizedClientLink href="/products">
                     <Button>Shop Now</Button>
                   </LocalizedClientLink>
                 </div>

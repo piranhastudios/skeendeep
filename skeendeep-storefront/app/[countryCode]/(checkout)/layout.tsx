@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Footer } from "react-day-picker"
+import { Footer } from "@/components/footer"
 
 export default function CheckoutLayout({
   children,
@@ -24,7 +24,7 @@ export default function CheckoutLayout({
               href="/"
               className="font-serif text-xl font-semibold text-foreground hover:text-foreground/80 transition-colors"
             >
-              NDARA
+              SkeenDeep
             </Link>
             <div className="w-24" /> {/* Spacer for balance */}
           </nav>

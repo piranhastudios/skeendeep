@@ -185,8 +185,8 @@ export default function ResetPasswordPage() {
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <Image
-          src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1200&q=80"
-          alt="Elegant interior"
+          src="/homepage-welcome-clinic.webp"
+          alt="SkeenDeep Medical Aesthetics Clinic"
           fill
           className="object-cover"
         />

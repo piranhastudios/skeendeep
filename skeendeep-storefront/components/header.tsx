@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useCart } from "@/lib/cart-store"
 import { useAuth } from "@/lib/auth-store"
-import { products } from "@/lib/products"
 import { convertToLocale } from "@/lib/util/money"
 import LocalizedClientLink from "@/components/common/localized-client-link"
+import { HttpTypes } from "@medusajs/types"
+import { listProducts } from "@lib/data/products"
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -25,6 +26,8 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState<HttpTypes.StoreProduct[]>([])
+  const [searchLoading, setSearchLoading] = useState(false)
   const [cartHovered, setCartHovered] = useState(false)
   const [accountOpen, setAccountOpen] = useState(false)
   const [tabPath, setTabPath] = useState("")
@@ -176,13 +179,34 @@ export function Header() {
     return () => document.removeEventListener("keydown", handleEscape)
   }, [])
 
-  // Filter products based on search
-  const searchResults = searchQuery.length > 1
-    ? products.filter(p => 
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.category.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 5)
-    : []
+  // Debounced search against the live Medusa catalog
+  const countryCode = pathname.split("/")[1] || "gb"
+
+  useEffect(() => {
+    let active = true
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([])
+      return
+    }
+    setSearchLoading(true)
+    const timeout = setTimeout(async () => {
+      try {
+        const { response } = await listProducts({
+          queryParams: { q: searchQuery, limit: 5 },
+          countryCode,
+        })
+        if (active) setSearchResults(response.products)
+      } catch {
+        if (active) setSearchResults([])
+      } finally {
+        if (active) setSearchLoading(false)
+      }
+    }, 300)
+    return () => {
+      active = false
+      clearTimeout(timeout)
+    }
+  }, [searchQuery, countryCode])
 
   const handleCartEnter = () => {
     if (cartTimeoutRef.current) clearTimeout(cartTimeoutRef.current)
@@ -626,45 +650,60 @@ export function Header() {
               {/* Search Results */}
               {searchQuery.length > 1 && (
                 <div className="mt-6">
-                  {searchResults.length > 0 ? (
+                  {searchLoading ? (
+                    <div className="text-center py-8">
+                      <p className="text-muted-foreground">Searching...</p>
+                    </div>
+                  ) : searchResults.length > 0 ? (
                     <>
                       <p className="text-sm text-muted-foreground mb-4">
                         {searchResults.length} results for &quot;{searchQuery}&quot;
                       </p>
                       <div className="grid gap-4">
-                        {searchResults.map((product) => (
-                          <Link
-                            key={product.id}
-                            href={`/products/${product.slug}`}
-                            className="flex items-center gap-4 p-3 rounded-xl hover:bg-secondary transition-colors"
-                            onClick={() => {
-                              setSearchOpen(false)
-                              setSearchQuery("")
-                            }}
-                          >
-                            <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
-                              <Image
-                                src={product.image || "/placeholder.svg"}
-                                alt={product.name}
-                                fill
-                                className="object-cover"
-                              />
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="font-medium text-foreground">{product.name}</h3>
-                              <p className="text-sm text-muted-foreground">{product.category}</p>
-                            </div>
-                            <span className="font-semibold text-foreground">
-                              ${product.price.toFixed(2)}
-                            </span>
-                          </Link>
-                        ))}
+                        {searchResults.map((product) => {
+                          const v = product.variants?.[0]
+                          const price = v?.calculated_price?.calculated_amount
+                          return (
+                            <LocalizedClientLink
+                              key={product.id}
+                              href={`/products/${product.handle}`}
+                              className="flex items-center gap-4 p-3 rounded-xl hover:bg-secondary transition-colors"
+                              onClick={() => {
+                                setSearchOpen(false)
+                                setSearchQuery("")
+                              }}
+                            >
+                              <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
+                                <Image
+                                  src={product.thumbnail || "/placeholder.svg"}
+                                  alt={product.title}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="font-medium text-foreground">{product.title}</h3>
+                                {product.subtitle && (
+                                  <p className="text-sm text-muted-foreground">{product.subtitle}</p>
+                                )}
+                              </div>
+                              {typeof price === "number" && (
+                                <span className="font-semibold text-foreground">
+                                  {convertToLocale({
+                                    amount: price,
+                                    currency_code: v!.calculated_price!.currency_code || "gbp",
+                                  })}
+                                </span>
+                              )}
+                            </LocalizedClientLink>
+                          )
+                        })}
                       </div>
                       <div className="mt-6 text-center">
-                        <Button 
+                        <Button
                           variant="outline"
                           onClick={() => {
-                            router.push(`/products?search=${encodeURIComponent(searchQuery)}`)
+                            router.push(`/${countryCode}/products?search=${encodeURIComponent(searchQuery)}`)
                             setSearchOpen(false)
                             setSearchQuery("")
                           }}
@@ -691,7 +730,7 @@ export function Header() {
                 <div className="mt-8">
                   <p className="text-sm font-medium text-foreground mb-4">Popular Searches</p>
                   <div className="flex flex-wrap gap-2">
-                    {["Armchair", "Lamp", "Bed", "Mirror", "Dining Table"].map((term) => (
+                    {["SPF", "Vitamin C", "Botox", "Dermal Filler", "Skincare"].map((term) => (
                       <button
                         key={term}
                         onClick={() => setSearchQuery(term)}

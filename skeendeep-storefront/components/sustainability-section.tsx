@@ -17,8 +17,8 @@ export function SustainabilitySection({ homePageData }: { homePageData?: SanityD
     ? urlFor(homePageData.sustainabilityImage)?.width(800).height(600).url()
     : null
 
-  const heading = homePageData?.sustainabilityHeading || "MATERIAL\nINTEGRITY\nMATTERS."
-  const description = homePageData?.sustainabilityDescription || "Our commitment to texture and restraint starts with the materials we choose. Every piece begins with responsibly sourced wood from certified sustainable forests."
+  const heading = homePageData?.sustainabilityHeading || "SAFETY AND\nRESULTS,\nALWAYS."
+  const description = homePageData?.sustainabilityDescription || "Every treatment at SkeenDeep is carried out by experienced medical professionals using clinically regulated, evidence-based products and technology."
 
   return (
     <section className="py-16 md:py-24 bg-secondary">
@@ -39,11 +39,11 @@ export function SustainabilitySection({ homePageData }: { homePageData?: SanityD
               {description}
             </p>
 
-            <LocalizedClientLink href="/about/#sustainability">
+            <LocalizedClientLink href="/about">
               <Button 
                 className="mt-8 bg-accent hover:cursor-pointer text-accent-foreground hover:bg-accent/90 rounded-sm px-8 py-6 text-sm font-medium"
               >
-                Testimonials
+                Meet the Clinic
               </Button>
             </LocalizedClientLink>
           </div>
@@ -51,8 +51,8 @@ export function SustainabilitySection({ homePageData }: { homePageData?: SanityD
           {/* Image */}
           <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
             <Image
-              src={sustainabilityImageUrl || "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80"}
-              alt="Modern curved sofa in sustainable materials"
+              src={sustainabilityImageUrl || "/img_9385_538_kb.jpg"}
+              alt="SkeenDeep Medical Aesthetics Clinic"
               fill
               className="object-cover"
             />

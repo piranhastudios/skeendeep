@@ -204,9 +204,9 @@ export default function OrdersPage() {
                     No Orders Yet
                   </h3>
                   <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                    You haven't placed any orders yet. Start exploring our curated collection to find pieces that speak to your style.
+                    You haven't placed any orders yet. Browse our treatments and skincare to get started.
                   </p>
-                  <LocalizedClientLink href="/store">
+                  <LocalizedClientLink href="/products">
                     <Button>
                       Start Shopping
                     </Button>

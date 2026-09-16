@@ -57,60 +57,56 @@ const iconMap = {
 
 const defaultServices = [
 	{
+		icon: "WandSparkles",
+		title: "Wrinkle Reduction",
+		description:
+			"Clinically proven treatments that soften fine lines and wrinkles, helping you look rested and natural without surgery.",
+		features: [
+			"Non-invasive treatments",
+			"Natural-looking results",
+			"Performed by medical professionals",
+			"No downtime",
+		],
+		image: "/homepage-welcome-clinic.webp",
+	},
+	{
+		icon: "Apple",
+		title: "Acne Treatment",
+		description:
+			"Personalised plans that tackle active breakouts and prevent them from returning, tailored to your skin type and history.",
+		features: [
+			"Personalised treatment plan",
+			"Targets active breakouts",
+			"Prevents recurrence",
+			"Post-treatment skincare advice",
+		],
+		image: "/Dr-Adeline-Afong-GP-and-Aesthetics-Clinician-Large-e1758041158206.webp",
+	},
+	{
+		icon: "BatteryCharging",
+		title: "Excessive Sweating",
+		description:
+			"An effective, medically supervised solution for excessive sweating, giving you confidence and comfort every day.",
+		features: [
+			"Medically supervised",
+			"Long-lasting results",
+			"Minimally invasive",
+			"Quick procedure",
+		],
+		image: "/img_9385_538_kb.jpg",
+	},
+	{
 		icon: "Paintbrush",
-		title: "Interior Design",
+		title: "Fat Reduction",
 		description:
-			"Our expert designers work closely with you to create spaces that reflect your personality and lifestyle. From concept to completion, we bring your vision to life.",
+			"Targeted, non-invasive treatments that help reduce localised fat and refine your body contours.",
 		features: [
-			"Personalized consultations",
-			"3D visualizations",
-			"Material sourcing",
-			"Project management",
+			"Non-invasive technology",
+			"Targets stubborn fat",
+			"Gradual, natural results",
+			"No downtime",
 		],
-		image:
-			"https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&q=80",
-	},
-	{
-		icon: "Ruler",
-		title: "Custom Furniture",
-		description:
-			"Each piece is meticulously crafted to your exact specifications using traditional techniques and sustainable materials from our certified forests.",
-		features: [
-			"Bespoke designs",
-			"Premium materials",
-			"Skilled craftsmanship",
-			"Lifetime warranty",
-		],
-		image:
-			"https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80",
-	},
-	{
-		icon: "Truck",
-		title: "Delivery & Setup",
-		description:
-			"White-glove delivery service ensures your furniture arrives in perfect condition. Our team handles everything from transport to placement.",
-		features: [
-			"Scheduled delivery",
-			"Careful handling",
-			"Room placement",
-			"Packaging removal",
-		],
-		image:
-			"https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=600&q=80",
-	},
-	{
-		icon: "Wrench",
-		title: "Installation",
-		description:
-			"Professional installation by our trained technicians. We ensure every piece is properly assembled and positioned for optimal use and aesthetics.",
-		features: [
-			"Expert assembly",
-			"Wall mounting",
-			"Lighting setup",
-			"Final inspection",
-		],
-		image:
-			"https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=600&q=80",
+		image: "/homepage-welcome-clinic.webp",
 	},
 ]
 
@@ -119,25 +115,25 @@ const defaultProcessSteps = [
 		number: "01",
 		title: "Consultation",
 		description:
-			"We begin with understanding your needs, style preferences, and space requirements.",
+			"We begin with a thorough assessment of your skin and a discussion of your goals.",
 	},
 	{
 		number: "02",
-		title: "Design",
+		title: "Personalised Plan",
 		description:
-			"Our team creates detailed designs and 3D visualizations for your approval.",
+			"Your practitioner designs a treatment and skincare plan tailored to you.",
 	},
 	{
 		number: "03",
-		title: "Crafting",
+		title: "Treatment",
 		description:
-			"Skilled artisans bring designs to life using premium sustainable materials.",
+			"Your treatment is performed by an experienced medical professional.",
 	},
 	{
 		number: "04",
-		title: "Delivery",
+		title: "Aftercare",
 		description:
-			"White-glove delivery and professional installation complete the journey.",
+			"We guide your follow-up care so your results look their best.",
 	},
 ]
 
@@ -154,12 +150,12 @@ export default async function ServicesPage() {
 	})) || defaultServices
 
 	const processSteps = pageData?.processSteps || defaultProcessSteps
-	const pageTitle = pageData?.title || "Our Services"
-	const headerDescription = pageData?.headerDescription || "From initial concept to final installation, we provide comprehensive services to transform your living spaces into extraordinary environments."
+	const pageTitle = pageData?.title || "Our Treatments"
+	const headerDescription = pageData?.headerDescription || "Explore our range of clinically proven, non-invasive treatments — each tailored to you and your skin."
 	const processTitle = pageData?.processTitle || "Our Process"
-	const processDescription = pageData?.processDescription || "A seamless journey from inspiration to installation."
-	const ctaTitle = pageData?.ctaTitle || "Ready to Transform Your Space?"
-	const ctaDescription = pageData?.ctaDescription || "Schedule a free consultation with our design experts and take the first step towards your dream home."
+	const processDescription = pageData?.processDescription || "A clear, comfortable journey from consultation to aftercare."
+	const ctaTitle = pageData?.ctaTitle || "Ready to Start?"
+	const ctaDescription = pageData?.ctaDescription || "Book a consultation with our medical team and take the first step towards healthier-looking skin."
 	const ctaButtonText = pageData?.ctaButtonText || "Book a Consultation"
 
 	return (

@@ -3,7 +3,7 @@ import ProductsTemplate from "./products-template"
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Explore all of our curated furniture products.",
+  description: "Explore our professional-grade skincare products, treatments and daily care essentials at SkeenDeep Medical Aesthetics Clinic.",
 }
 
 type Params = {

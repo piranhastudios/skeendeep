@@ -57,18 +57,18 @@ export default function AuthPage() {
       {/* Left side - Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <Image
-          src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1200&q=80"
-          alt="Elegant interior"
+          src="/homepage-welcome-clinic.webp"
+          alt="Welcome to SkeenDeep Medical Aesthetics Clinic"
           fill
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
         <div className="absolute bottom-12 left-12 right-12">
           <h2 className="text-4xl font-serif text-white leading-tight">
-            Create beautiful spaces with handcrafted furniture
+            Expert non-invasive aesthetic dermatology
           </h2>
           <p className="mt-4 text-white/80 max-w-md">
-            Join NDARA to access exclusive collections, track your orders, and receive personalized recommendations.
+            Join SkeenDeep to track your orders and receive personalised skincare and treatment recommendations.
           </p>
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function AuthPage() {
             <Link href="/" className="flex justify-center mb-8">
               <Image
                 src="/logo.png"
-                alt="NDARA"
+                alt="SkeenDeep"
                 width={120}
                 height={48}
                 className="h-10 w-auto"
@@ -108,7 +108,7 @@ export default function AuthPage() {
               <p className="mt-2 text-muted-foreground">
                 {mode === "login" 
                   ? "Sign in to your account to continue" 
-                  : "Join NDARA for exclusive access"}
+                  : "Create an account for a faster checkout"}
               </p>
             </div>
 

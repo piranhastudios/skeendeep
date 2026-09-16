@@ -1,8 +1,8 @@
 import type { SanityDocument } from "next-sanity"
 
 export function MissionStatement({ homePageData }: { homePageData?: SanityDocument }) {
-  const label = homePageData?.missionLabel || "The NDARA Approach"
-  const statement = homePageData?.missionStatement || "WE CARE ABOUT PROPORTION, TEXTURE, AND RESTRAINT. ABOUT FURNITURE THAT SUPPORTS HOW YOU LIVE RATHER THAN COMPETING FOR ATTENTION."
+  const label = homePageData?.missionLabel || "The SkeenDeep Approach"
+  const statement = homePageData?.missionStatement || "WE CARE ABOUT RESULTS, SAFETY, AND UNDERSTANDING. ABOUT TREATMENTS AND SKINCARE THAT SUPPORT YOUR SKIN'S HEALTH AND CONFIDENCE."
 
   return (
     <section className="py-20 md:py-28 bg-background">

@@ -170,6 +170,33 @@ export async function transferCart() {
   revalidateTag(cartCacheTag, "max")
 }
 
+export const listCustomerAddresses =
+  async (): Promise<HttpTypes.StoreCustomerAddress[]> => {
+    const authHeaders = await getAuthHeaders()
+
+    if (!authHeaders) return []
+
+    const headers = {
+      ...authHeaders,
+    }
+
+    const next = {
+      ...(await getCacheOptions("customers")),
+    }
+
+    return await sdk.client
+      .fetch<{ addresses: HttpTypes.StoreCustomerAddress[] }>(
+        `/store/customers/me/addresses`,
+        {
+          method: "GET",
+          headers,
+          next,
+        }
+      )
+      .then(({ addresses }) => addresses)
+      .catch(() => [])
+  }
+
 export const addCustomerAddress = async (
   currentState: Record<string, unknown>,
   formData: FormData

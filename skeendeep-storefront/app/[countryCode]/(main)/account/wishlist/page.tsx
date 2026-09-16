@@ -1,56 +1,24 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, Heart, ShoppingBag, X, Star } from "lucide-react"
+import { ArrowLeft, Heart, ShoppingBag, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { useAuth } from "@/lib/auth-store"
 import { useCart } from "@/lib/cart-store"
-import { cn } from "@/lib/utils"
+import { useWishlist } from "@/lib/wishlist-store"
+import { convertToLocale } from "@/lib/util/money"
 import LocalizedClientLink from "@/components/common/localized-client-link"
-
-const initialWishlist = [
-	{
-		id: 3,
-		name: "THEODORE ARMCHAIR",
-		slug: "theodore-armchair",
-		price: 995.99,
-		rating: 4.8,
-		reviews: 1024,
-		category: "Living Room",
-		image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80",
-	},
-	{
-		id: 5,
-		name: "BRODIE MIRROR",
-		slug: "brodie-mirror",
-		price: 546.99,
-		rating: 4.5,
-		reviews: 842,
-		category: "Living Room",
-		image: "https://images.unsplash.com/photo-1618220048045-10a6dbdf83e0?w=400&q=80",
-	},
-	{
-		id: 7,
-		name: "OSLO DINING TABLE",
-		slug: "oslo-dining-table",
-		price: 1890.99,
-		rating: 4.9,
-		reviews: 445,
-		category: "Dining Room",
-		image: "https://images.unsplash.com/photo-1617806118233-18e1de247200?w=400&q=80",
-	},
-]
 
 export default function WishlistPage() {
 	const { isAuthenticated } = useAuth()
 	const { addItem } = useCart()
+	const { items, removeFromWishlist } = useWishlist()
 	const router = useRouter()
-	const [wishlist, setWishlist] = useState(initialWishlist)
 
 	useEffect(() => {
 		if (!isAuthenticated) {
@@ -62,12 +30,8 @@ export default function WishlistPage() {
 		return null
 	}
 
-	const removeFromWishlist = (id: number) => {
-		setWishlist((prev) => prev.filter((item) => item.id !== id))
-	}
-
-	const handleAddToCart = (item: typeof initialWishlist[0]) => {
-		addItem(item.id.toString())
+	const handleAddToCart = (item: { variantId: string }) => {
+		addItem(item.variantId)
 	}
 
 	return (
@@ -88,7 +52,7 @@ export default function WishlistPage() {
 						Wishlist
 					</h1>
 
-					{wishlist.length === 0 ? (
+					{items.length === 0 ? (
 						<div className="text-center py-20">
 							<div className="w-20 h-20 mx-auto mb-6 rounded-full bg-secondary flex items-center justify-center">
 								<Heart className="w-10 h-10 text-muted-foreground" />
@@ -103,31 +67,31 @@ export default function WishlistPage() {
 								asChild
 								className="rounded-full bg-foreground text-background hover:bg-foreground/90"
 							>
-								<Link href="/products">Browse Products</Link>
+								<LocalizedClientLink href="/products">Browse Products</LocalizedClientLink>
 							</Button>
 						</div>
 					) : (
 						<>
 							<p className="text-muted-foreground mb-6">
-								{wishlist.length} items saved
+								{items.length} items saved
 							</p>
 							<div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-								{wishlist.map((item) => (
-									<div key={item.id} className="group">
+								{items.map((item) => (
+									<div key={item.variantId} className="group">
 										{/* Image Container */}
 										<div className="relative aspect-square rounded-lg overflow-hidden bg-secondary mb-4">
-											<Link href={`/products/${item.slug}`}>
+											<LocalizedClientLink href={`/products/${item.handle}`}>
 												<Image
-													src={item.image || "/placeholder.svg"}
+													src={item.thumbnail || "/placeholder.svg"}
 													alt={item.name}
 													fill
 													className="object-cover group-hover:scale-105 transition-transform duration-500"
 												/>
-											</Link>
+											</LocalizedClientLink>
 
 											{/* Remove Button */}
 											<button
-												onClick={() => removeFromWishlist(item.id)}
+												onClick={() => removeFromWishlist(item.variantId)}
 												className="absolute top-4 right-4 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
 												aria-label="Remove from wishlist"
 											>
@@ -148,37 +112,17 @@ export default function WishlistPage() {
 
 										{/* Product Info */}
 										<div>
-											<span className="text-xs text-muted-foreground uppercase tracking-wider">
-												{item.category}
-											</span>
 											<div className="flex items-center justify-between mb-2 mt-1">
-												<Link href={`/products/${item.slug}`}>
+												<LocalizedClientLink href={`/products/${item.handle}`}>
 													<h3 className="font-medium text-sm text-foreground tracking-wide hover:underline">
 														{item.name}
 													</h3>
-												</Link>
+												</LocalizedClientLink>
 												<span className="font-semibold text-foreground">
-													${item.price.toFixed(2)}
-												</span>
-											</div>
-
-											{/* Rating */}
-											<div className="flex items-center gap-2">
-												<div className="flex items-center gap-0.5">
-													{[...Array(5)].map((_, i) => (
-														<Star
-															key={i}
-															className={cn(
-																"w-3.5 h-3.5",
-																i < Math.floor(item.rating)
-																	? "fill-accent text-accent"
-																	: "fill-muted text-muted"
-															)}
-														/>
-													))}
-												</div>
-												<span className="text-xs text-muted-foreground">
-													{item.reviews} Reviews
+													{convertToLocale({
+														amount: item.price,
+														currency_code: item.currency_code,
+													})}
 												</span>
 											</div>
 										</div>
@@ -189,6 +133,7 @@ export default function WishlistPage() {
 					)}
 				</div>
 			</main>
-					</div>
+			<Footer />
+		</div>
 	)
 }

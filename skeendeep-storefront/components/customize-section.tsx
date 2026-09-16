@@ -17,8 +17,8 @@ export function CustomizeSection({ homePageData }: { homePageData?: SanityDocume
     ? urlFor(homePageData.customizeImage)?.width(800).height(800).url()
     : null
 
-  const heading = homePageData?.customizeHeading || "CURATED FOR\nHOW YOU LIVE"
-  const description = homePageData?.customizeDescription || "We believe in curation over trends. Our collection brings together pieces that honor materiality and proportion, making intentional choices easier in a world full of options."
+  const heading = homePageData?.customizeHeading || "PERSONALISED\nCARE FOR YOUR SKIN"
+  const description = homePageData?.customizeDescription || "Every treatment plan at SkeenDeep is tailored to your skin. We take the time to understand your goals and prescribe clinically proven treatments and skincare that actually work for you."
 
   return (
     <section className="py-16 md:py-24 bg-background">
@@ -27,8 +27,8 @@ export function CustomizeSection({ homePageData }: { homePageData?: SanityDocume
           {/* Image */}
           <div className="relative aspect-[4/3] md:aspect-[3/4] rounded-lg overflow-hidden">
             <Image
-              src={customizeImageUrl || "https://images.unsplash.com/photo-1618220179428-22790b461013?w=800&q=80"}
-              alt="Elegant table lamp with wooden base in a warm interior setting"
+              src={customizeImageUrl || "/homepage-welcome-clinic.webp"}
+              alt="SkeenDeep Medical Aesthetics Clinic"
               fill
               className="object-cover"
             />

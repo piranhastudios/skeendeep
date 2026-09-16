@@ -14,6 +14,7 @@ import { listProductsWithSort } from "@/lib/data/products"
 import { listCollections } from "@/lib/data/collections"
 import { getRegion } from "@/lib/data/regions"
 import { useCart } from "@/lib/cart-store"
+import { useWishlist, type WishlistItem } from "@/lib/wishlist-store"
 import { SortOptions } from "@/modules/store/components/refinement-list/sort-products"
 import { Spinner } from "@/components/ui/spinner"
 
@@ -279,16 +280,36 @@ function ProductCard({
   region: HttpTypes.StoreRegion
 }) {
   const { addItem, isLoading } = useCart()
+  const { isInWishlist, toggleWishlist } = useWishlist()
+
+  const variant = product.variants?.[0]
+  const price = variant?.calculated_price
+  const item: WishlistItem = {
+    id: product.id,
+    variantId: variant?.id ?? product.id,
+    handle: product.handle ?? "",
+    name: product.title,
+    thumbnail: product.thumbnail ?? null,
+    price: price?.calculated_amount ?? 0,
+    currency_code: price?.currency_code || region.currency_code,
+  }
+  const inWishlist = isInWishlist(item.variantId)
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
     // Get the first available variant
-    const variant = product.variants?.[0]
-    if (!variant) return
+    const firstVariant = product.variants?.[0]
+    if (!firstVariant) return
 
-    await addItem(variant.id, 1)
+    await addItem(firstVariant.id, 1)
+  }
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleWishlist(item)
   }
   if (viewMode === "list") {
     return (
@@ -340,10 +361,10 @@ function ProductCard({
         />
         <button
           className="absolute top-4 right-4 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
-          aria-label="Add to wishlist"
-          onClick={(e) => e.preventDefault()}
+          aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          onClick={handleToggleWishlist}
         >
-          <Heart className="w-5 h-5 text-foreground" />
+          <Heart className={`w-5 h-5 ${inWishlist ? "fill-accent text-accent" : "text-foreground"}`} />
         </button>
       </div>
       <div>

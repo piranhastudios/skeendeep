@@ -43,7 +43,7 @@ export default function AppointmentsPage() {
                         location: appt.location || "Clinic",
                         notes: appt.notes || "",
                         duration: `${appt.duration_minutes} mins`,
-                        status: "Confirmed"
+                        status: appt.status || "Pending"
                     }))
 
                     setAppointments(mapped)
@@ -132,7 +132,12 @@ export default function AppointmentsPage() {
                             </Card>
                         ) : (
                             <div className="grid gap-4 md:grid-cols-1">
-                                {appointments.map((appt) => (
+                                {appointments.map((appt) => {
+                                    const isConfirmed = appt.status?.toLowerCase() === "confirmed"
+                                    const statusLabel = appt.status
+                                        ? appt.status.charAt(0).toUpperCase() + appt.status.slice(1)
+                                        : "Pending"
+                                    return (
                                     <Card key={appt.id} className="overflow-hidden">
                                         <div className="flex flex-col md:flex-row md:items-center p-6 gap-4 md:gap-8">
                                             <div className="flex-shrink-0 flex items-center justify-center w-16 h-16 bg-primary/5 rounded-full border border-primary/10">
@@ -142,8 +147,10 @@ export default function AppointmentsPage() {
                                             <div className="flex-grow space-y-1">
                                                 <div className="flex items-center gap-2">
                                                     <h3 className="text-lg font-semibold">{appt.type}</h3>
-                                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        Confirmed
+                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                                        isConfirmed ? "bg-green-100 text-green-800" : "bg-muted text-muted-foreground"
+                                                    }`}>
+                                                        {statusLabel}
                                                     </span>
                                                 </div>
                                                 <div className="flex flex-col sm:flex-row sm:gap-6 text-sm text-muted-foreground">
@@ -171,7 +178,8 @@ export default function AppointmentsPage() {
                                             </div>
                                         </div>
                                     </Card>
-                                ))}
+                                    )
+                                })}
                             </div>
                         )}
                     </TabsContent>

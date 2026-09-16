@@ -35,35 +35,35 @@ const iconMap = {
 
 const defaultFooterLinks = {
   product: [
-    { name: "Living Room", href: "/collections/living-room" },
-    { name: "Bedroom", href: "/collections/bedroom" },
-    { name: "Dining Room", href: "/collections/dining-room" },
-    { name: "Office", href: "/collections/office" },
+    { name: "All Products", href: "/products" },
+    { name: "Skincare", href: "/products" },
+    { name: "SPF Protection", href: "/products?search=SPF" },
+    { name: "Featured", href: "/products" },
   ],
   services: [
-    { name: "Interior Design", href: "/services/interior-design" },
-    { name: "Custom Furniture", href: "/services/custom-furniture" },
-    { name: "Delivery", href: "/services/delivery" },
-    { name: "Installation", href: "/services/installation" },
+    { name: "Treatments", href: "/services" },
+    { name: "Book an Appointment", href: "/book" },
+    { name: "About the Clinic", href: "/about" },
+    { name: "Testimonials", href: "/testimonials" },
   ],
   about: [
     { name: "Our Story", href: "/about" },
-    { name: "Sustainability", href: "/sustainability" },
-    { name: "Careers", href: "/careers" },
-    { name: "Press", href: "/press" },
+    { name: "Testimonials", href: "/testimonials" },
+    { name: "Treatments", href: "/services" },
+    { name: "Contact", href: "/contact" },
   ],
   testimonials: [
     { name: "Customer Reviews", href: "/testimonials" },
-    { name: "Projects", href: "/projects" },
-    { name: "Gallery", href: "/gallery" },
+    { name: "Shop Skincare", href: "/products" },
+    { name: "Book a Treatment", href: "/book" },
   ],
 }
 
 const defaultSocialLinks = [
-  { name: "LinkedIn", href: "#", icon: "Linkedin" },
-  { name: "Facebook", href: "#", icon: "Facebook" },
-  { name: "Instagram", href: "#", icon: "Instagram" },
-  { name: "Youtube", href: "#", icon: "Youtube" },
+  { name: "Instagram", href: "https://www.instagram.com/skeendeep", icon: "Instagram" },
+  { name: "Facebook", href: "https://www.facebook.com/skeendeep", icon: "Facebook" },
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/skeendeep", icon: "Linkedin" },
+  { name: "Youtube", href: "https://www.youtube.com/@skeendeep", icon: "Youtube" },
 ]
 
 export async function Footer() {
@@ -72,16 +72,16 @@ export async function Footer() {
     client.fetch<any[]>(LEGAL_LINKS_QUERY, {}, { next: { revalidate: 3600 } })
   ])
 
-  const brandTagline = footerData?.brandTagline || "Where interior design expertise meets ecommerce craft. Curated furniture that shapes spaces, not just fills them."
+  const brandTagline = footerData?.brandTagline || "SkeenDeep Medical Aesthetics Clinic — experts in non-invasive aesthetic dermatology and professional-grade skincare."
   const productLinks = footerData?.productLinks || defaultFooterLinks.product
   const servicesLinks = footerData?.servicesLinks || defaultFooterLinks.services
   const aboutLinks = footerData?.aboutLinks || defaultFooterLinks.about
   const testimonialsLinks = footerData?.testimonialsLinks || defaultFooterLinks.testimonials
-  const contactPhone = footerData?.contactPhone || "+1 (999) 888-77-66"
-  const contactEmail = footerData?.contactEmail || "hello@ndara.com"
-  const locationAddress = footerData?.locationAddress || "AE2650, Moscow,\nMametovoy 22-15, Office 4"
+  const contactPhone = footerData?.contactPhone || "+44 7598614901"
+  const contactEmail = footerData?.contactEmail || "care@skeendeep.co.uk"
+  const locationAddress = footerData?.locationAddress || "190 School Road,\nBirmingham,\nB28 8PA, United Kingdom"
   const socialLinks = footerData?.socialLinks || defaultSocialLinks
-  const copyrightText = footerData?.copyrightText || "© 2024 — Copyright. All Rights reserved."
+  const copyrightText = footerData?.copyrightText || "© 2026 SkeenDeep. All rights reserved."
 
   return (
     <footer className="bg-background border-t border-border">

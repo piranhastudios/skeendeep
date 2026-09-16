@@ -5,6 +5,7 @@ import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { CartProvider } from '@/lib/cart-store'
 import { AuthProvider } from '@/lib/auth-store'
+import { WishlistProvider } from '@/lib/wishlist-store'
 import './globals.css'
 
 const cormorant = Cormorant_Garamond({
@@ -56,9 +57,10 @@ export default function RootLayout({
       <body className={`${dmSans.variable} ${cormorant.variable} font-sans antialiased`}>
         <AuthProvider>
           <CartProvider>
-            {children}
-            {shouldInjectToolbar && <VercelToolbar />}
-    
+            <WishlistProvider>
+              {children}
+              {shouldInjectToolbar && <VercelToolbar />}
+            </WishlistProvider>
           </CartProvider>
         </AuthProvider>
         <Analytics />

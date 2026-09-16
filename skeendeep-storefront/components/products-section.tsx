@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import LocalizedClientLink from "@/components/common/localized-client-link"
 import { convertToLocale } from "@/lib/util/money"
 import { listProducts } from "@lib/data/products"
+import { useWishlist, type WishlistItem } from "@/lib/wishlist-store"
 
 export function ProductsSection({ collections = [], region }: {
   collections?: HttpTypes.StoreCollection[]
@@ -99,7 +100,7 @@ export function ProductsSection({ collections = [], region }: {
 						))
 					) : products.length > 0 ? (
 						products.map((product) => (
-							<ProductCard key={product.id} product={product} />
+							<ProductCard key={product.id} product={product} region={region} />
 						))
 					) : (
 						<div className="col-span-full text-center py-12">
@@ -112,7 +113,29 @@ export function ProductsSection({ collections = [], region }: {
 	)
 }
 
-function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
+function ProductCard({
+	product,
+	region,
+}: {
+	product: HttpTypes.StoreProduct
+	region?: HttpTypes.StoreRegion
+}) {
+	const { isInWishlist, toggleWishlist } = useWishlist()
+
+	const variant = product.variants?.[0]
+	const price = variant?.calculated_price
+	const currency_code = price?.currency_code || region?.currency_code || "gbp"
+	const item: WishlistItem = {
+		id: product.id,
+		variantId: variant?.id ?? product.id,
+		handle: product.handle ?? "",
+		name: product.title,
+		thumbnail: product.thumbnail ?? null,
+		price: price?.calculated_amount ?? 0,
+		currency_code,
+	}
+	const inWishlist = isInWishlist(item.variantId)
+
 	return (
 		<LocalizedClientLink href={`/products/${product.handle}`} className="group block">
 			{/* Image Container */}
@@ -127,10 +150,13 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
 				{/* Wishlist Button */}
 				<button
 					className="absolute top-4 right-4 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-background transition-colors"
-					aria-label="Add to wishlist"
-					onClick={(e) => e.preventDefault()}
+					aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+					onClick={(e) => {
+						e.preventDefault()
+						toggleWishlist(item)
+					}}
 				>
-					<Heart className="w-5 h-5 text-foreground" />
+					<Heart className={`w-5 h-5 ${inWishlist ? "fill-accent text-accent" : "text-foreground"}`} />
 				</button>
 			</div>
 
@@ -141,12 +167,12 @@ function ProductCard({ product }: { product: HttpTypes.StoreProduct }) {
 						{product.title}
 					</h3>
 					<span className="font-semibold text-foreground">
-						{product.variants && 
-						 product.variants.length > 0 && 
+						{product.variants &&
+						 product.variants.length > 0 &&
 						 product.variants[0]?.calculated_price?.calculated_amount
 							? convertToLocale({
 								amount: product.variants[0].calculated_price.calculated_amount,
-								currency_code: product.variants[0].calculated_price.currency_code || 'USD',
+								currency_code: product.variants[0].calculated_price.currency_code || currency_code,
 							})
 							: 'Price unavailable'
 						}

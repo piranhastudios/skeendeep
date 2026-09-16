@@ -11,12 +11,12 @@ const rooms = [
   },
   {
     name: "Our Services",
-    image: "https://plus.unsplash.com/premium_photo-1719617672948-862f2f06e2a1?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "/homepage-welcome-clinic.webp",
     href: "/services",
   },
   {
     name: "Daily skin care guides",
-    image: "https://images.unsplash.com/photo-1648203276014-20f97ba1f817?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "/Dr-Adeline-Afong-GP-and-Aesthetics-Clinician-Large-e1758041158206.webp",
     href: "/daily-skin-care-guides",
   },
 ]
