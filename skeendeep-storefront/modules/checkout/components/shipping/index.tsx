@@ -7,7 +7,7 @@ import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
-import { clx, Heading, Text } from "@medusajs/ui"
+import { clx } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
@@ -87,22 +87,22 @@ const Shipping: React.FC<ShippingProps> = ({
   useEffect(() => {
     setIsLoadingPrices(true)
 
-    if (_shippingMethods?.length) {
-      const promises = _shippingMethods
-        .filter((sm) => sm.price_type === "calculated")
-        .map((sm) => calculatePriceForShippingOption(sm.id, cart.id))
+    const promises = (_shippingMethods ?? [])
+      .filter((sm) => sm.price_type === "calculated")
+      .map((sm) => calculatePriceForShippingOption(sm.id, cart.id))
 
-      if (promises.length) {
-        Promise.allSettled(promises).then((res) => {
-          const pricesMap: Record<string, number> = {}
-          res
-            .filter((r) => r.status === "fulfilled")
-            .forEach((p) => (pricesMap[p.value?.id || ""] = p.value?.amount!))
+    if (promises.length) {
+      Promise.allSettled(promises).then((res) => {
+        const pricesMap: Record<string, number> = {}
+        res
+          .filter((r) => r.status === "fulfilled")
+          .forEach((p) => (pricesMap[p.value?.id || ""] = p.value?.amount!))
 
-          setCalculatedPricesMap(pricesMap)
-          setIsLoadingPrices(false)
-        })
-      }
+        setCalculatedPricesMap(pricesMap)
+        setIsLoadingPrices(false)
+      })
+    } else {
+      setIsLoadingPrices(false)
     }
 
     if (_pickupMethods?.find((m) => m.id === shippingMethodId)) {
@@ -156,47 +156,40 @@ const Shipping: React.FC<ShippingProps> = ({
   }, [isOpen])
 
   return (
-    <div className="bg-white">
-      <div className="flex flex-row items-center justify-between mb-6">
-        <Heading
-          level="h2"
-          className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
-            {
-              "opacity-50 pointer-events-none select-none":
-                !isOpen && cart.shipping_methods?.length === 0,
-            }
-          )}
-        >
-          Delivery
-          {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && (
-            <CheckCircleSolid />
-          )}
-        </Heading>
-        {!isOpen &&
-          cart?.shipping_address &&
-          cart?.billing_address &&
-          cart?.email && (
-            <Text>
+    <div>
+      {!isOpen && (
+        <div className="flex flex-row items-center justify-between mb-6">
+          <div className="flex flex-row items-center gap-x-2">
+            <span className="font-medium text-foreground">Delivery</span>
+            {(cart.shipping_methods?.length ?? 0) > 0 && (
+              <CheckCircleSolid className="w-5 h-5 text-green-600" />
+            )}
+            {cart.shipping_methods?.length === 0 && (
+              <span className="text-sm text-muted-foreground">
+                Select your shipping method
+              </span>
+            )}
+          </div>
+          {cart?.shipping_address &&
+            cart?.billing_address &&
+            cart?.email && (
               <button
                 onClick={handleEdit}
-                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 data-testid="edit-delivery-button"
               >
                 Edit
               </button>
-            </Text>
-          )}
-      </div>
+            )}
+        </div>
+      )}
       {isOpen ? (
         <>
           <div className="grid">
             <div className="flex flex-col">
-              <span className="font-medium txt-medium text-ui-fg-base">
-                Shipping method
-              </span>
-              <span className="mb-4 text-ui-fg-muted txt-medium">
-                How would you like you order delivered
+              <span className="font-medium text-foreground">Shipping method</span>
+              <span className="mb-4 text-muted-foreground text-sm">
+                How would you like your order delivered?
               </span>
             </div>
             <div data-testid="delivery-options-container">
@@ -221,10 +214,12 @@ const Shipping: React.FC<ShippingProps> = ({
                       value={PICKUP_OPTION_ON}
                       data-testid="delivery-option-radio"
                       className={clx(
-                        "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                        "flex items-center justify-between cursor-pointer py-4 px-6 mb-3 border rounded-xl transition-colors",
                         {
-                          "border-ui-border-interactive":
+                          "border-foreground bg-secondary/50":
                             showPickupOptions === PICKUP_OPTION_ON,
+                          "border-border hover:border-foreground/40":
+                            showPickupOptions !== PICKUP_OPTION_ON,
                         }
                       )}
                     >
@@ -232,11 +227,11 @@ const Shipping: React.FC<ShippingProps> = ({
                         <MedusaRadio
                           checked={showPickupOptions === PICKUP_OPTION_ON}
                         />
-                        <span className="text-base-regular">
+                        <span className="text-foreground">
                           Pick up your order
                         </span>
                       </div>
-                      <span className="justify-self-end text-ui-fg-base">
+                      <span className="justify-self-end text-foreground">
                         -
                       </span>
                     </Radio>
@@ -264,11 +259,13 @@ const Shipping: React.FC<ShippingProps> = ({
                         data-testid="delivery-option-radio"
                         disabled={isDisabled}
                         className={clx(
-                          "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                          "flex items-center justify-between cursor-pointer py-4 px-6 mb-3 border rounded-xl transition-colors",
                           {
-                            "border-ui-border-interactive":
+                            "border-foreground bg-secondary/50":
                               option.id === shippingMethodId,
-                            "hover:shadow-brders-none cursor-not-allowed":
+                            "border-border hover:border-foreground/40":
+                              option.id !== shippingMethodId && !isDisabled,
+                            "border-border opacity-50 cursor-not-allowed":
                               isDisabled,
                           }
                         )}
@@ -277,11 +274,11 @@ const Shipping: React.FC<ShippingProps> = ({
                           <MedusaRadio
                             checked={option.id === shippingMethodId}
                           />
-                          <span className="text-base-regular">
+                          <span className="text-foreground">
                             {option.name}
                           </span>
                         </div>
-                        <span className="justify-self-end text-ui-fg-base">
+                        <span className="justify-self-end text-foreground">
                           {option.price_type === "flat" ? (
                             convertToLocale({
                               amount: option.amount!,
@@ -309,10 +306,8 @@ const Shipping: React.FC<ShippingProps> = ({
           {showPickupOptions === PICKUP_OPTION_ON && (
             <div className="grid">
               <div className="flex flex-col">
-                <span className="font-medium txt-medium text-ui-fg-base">
-                  Store
-                </span>
-                <span className="mb-4 text-ui-fg-muted txt-medium">
+                <span className="font-medium text-foreground">Store</span>
+                <span className="mb-4 text-muted-foreground text-sm">
                   Choose a store near you
                 </span>
               </div>
@@ -335,11 +330,14 @@ const Shipping: React.FC<ShippingProps> = ({
                           disabled={option.insufficient_inventory}
                           data-testid="delivery-option-radio"
                           className={clx(
-                            "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                            "flex items-center justify-between cursor-pointer py-4 px-6 mb-3 border rounded-xl transition-colors",
                             {
-                              "border-ui-border-interactive":
+                              "border-foreground bg-secondary/50":
                                 option.id === shippingMethodId,
-                              "hover:shadow-brders-none cursor-not-allowed":
+                              "border-border hover:border-foreground/40":
+                                option.id !== shippingMethodId &&
+                                !option.insufficient_inventory,
+                              "border-border opacity-50 cursor-not-allowed":
                                 option.insufficient_inventory,
                             }
                           )}
@@ -349,10 +347,10 @@ const Shipping: React.FC<ShippingProps> = ({
                               checked={option.id === shippingMethodId}
                             />
                             <div className="flex flex-col">
-                              <span className="text-base-regular">
+                              <span className="text-foreground">
                                 {option.name}
                               </span>
-                              <span className="text-base-regular text-ui-fg-muted">
+                              <span className="text-muted-foreground">
                                 {(option as any).service_zone?.fulfillment_set?.location
                                   ?.address
                                   ? formatAddress(
@@ -363,7 +361,7 @@ const Shipping: React.FC<ShippingProps> = ({
                               </span>
                             </div>
                           </div>
-                          <span className="justify-self-end text-ui-fg-base">
+                          <span className="justify-self-end text-foreground">
                             {convertToLocale({
                               amount: option.amount!,
                               currency_code: cart?.currency_code,
@@ -397,22 +395,20 @@ const Shipping: React.FC<ShippingProps> = ({
         </>
       ) : (
         <div>
-          <div className="text-small-regular">
-            {cart && (cart.shipping_methods?.length ?? 0) > 0 && (
-              <div className="flex flex-col w-1/3">
-                <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Method
-                </Text>
-                <Text className="txt-medium text-ui-fg-subtle">
-                  {cart.shipping_methods!.at(-1)!.name}{" "}
-                  {convertToLocale({
-                    amount: cart.shipping_methods!.at(-1)!.amount!,
-                    currency_code: cart?.currency_code,
-                  })}
-                </Text>
-              </div>
-            )}
-          </div>
+          {cart && (cart.shipping_methods?.length ?? 0) > 0 && (
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-foreground mb-1">
+                Method
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {cart.shipping_methods!.at(-1)!.name}{" "}
+                {convertToLocale({
+                  amount: cart.shipping_methods!.at(-1)!.amount!,
+                  currency_code: cart?.currency_code,
+                })}
+              </span>
+            </div>
+          )}
         </div>
       )}
       <Divider className="mt-8" />

@@ -4,7 +4,9 @@ import { RadioGroup } from "@headlessui/react"
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
-import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
+import { Container, Heading, Text, clx } from "@medusajs/ui"
+import { Button } from "@/components/ui/button"
+import { Loader2 } from "lucide-react"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
   StripeCardContainer,
@@ -203,16 +205,17 @@ const Payment = ({
           />
 
           <Button
-            size="large"
+            size="lg"
             className="mt-6"
             onClick={handleSubmit}
-            isLoading={isLoading}
             disabled={
+              isLoading ||
               (isStripeLike(selectedPaymentMethod) && !cardComplete) ||
               (!selectedPaymentMethod && !paidByGiftcard)
             }
             data-testid="submit-payment-button"
           >
+            {isLoading && <Loader2 className="animate-spin" />}
             {!activeSession && isStripeLike(selectedPaymentMethod)
               ? " Enter card details"
               : "Continue to review"}

@@ -16,8 +16,7 @@ export default function CartPage() {
 
   const currency_code = cart?.currency_code || items[0]?.currency_code || "USD"
   const subtotal = cart?.item_subtotal ?? totalPrice
-  const shipping = cart?.shipping_subtotal ?? 0
-  const discount = cart?.discount_subtotal ?? 0
+  const discount = cart?.discount_total ?? 0
   const tax = cart?.tax_total ?? 0
   const total = cart?.total ?? totalPrice
 
@@ -153,10 +152,6 @@ export default function CartPage() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="text-foreground">{convertToLocale({ amount: subtotal, currency_code })}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span className="text-foreground">{convertToLocale({ amount: shipping, currency_code })}</span>
                   </div>
                   {discount > 0 && (
                     <div className="flex items-center justify-between text-sm">

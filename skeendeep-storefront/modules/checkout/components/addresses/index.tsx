@@ -25,7 +25,20 @@ const Addresses = ({
   const router = useRouter()
   const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "address" || !cart?.shipping_address
+  // A freshly created Medusa cart always carries a shipping_address object with
+  // only country_code set — so "object exists" is not the same as "address
+  // filled in". Only treat the address as done once the required fields are set,
+  // otherwise the address form never opens and the delivery step stays dimmed.
+  const hasCompleteAddress = !!(
+    cart?.shipping_address?.first_name &&
+    cart?.shipping_address?.last_name &&
+    cart?.shipping_address?.address_1 &&
+    cart?.shipping_address?.city &&
+    cart?.shipping_address?.postal_code &&
+    cart?.shipping_address?.country_code
+  )
+
+  const isOpen = searchParams.get("step") === "address" || !hasCompleteAddress
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
     cart?.shipping_address && cart?.billing_address
@@ -44,11 +57,11 @@ const Addresses = ({
       <div className="flex flex-row items-center justify-between mb-6">
         <h4 className="font-medium text-foreground flex items-center gap-2">
           Shipping Address
-          {!isOpen && cart?.shipping_address && (
+          {!isOpen && hasCompleteAddress && (
             <CheckCircleSolid className="w-5 h-5 text-green-600" />
           )}
         </h4>
-        {!isOpen && cart?.shipping_address && (
+        {!isOpen && hasCompleteAddress && (
           <button
             onClick={handleEdit}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -86,7 +99,7 @@ const Addresses = ({
       ) : (
         <div>
           <div className="text-sm">
-            {cart && cart.shipping_address ? (
+            {cart && cart.shipping_address && hasCompleteAddress ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div data-testid="shipping-address-summary">
                   <p className="font-medium text-foreground mb-2">Shipping Address</p>

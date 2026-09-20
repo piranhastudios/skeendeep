@@ -311,18 +311,31 @@ export function Header() {
               </Link>
             </div>
 
-            {/* Empty left space for balance */}
-            <div className="w-10" />
-
-            {/* Right: Menu toggle */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="text-foreground hover:bg-transparent transition-all duration-300"
+            {/* Left: Menu toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative z-10 text-foreground hover:bg-transparent transition-all duration-300"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? <X className="h-5 w-5 transition-transform duration-300 rotate-90" /> : <Menu className="h-5 w-5 transition-transform duration-300" />}
               <span className="sr-only">Menu</span>
+            </Button>
+
+            {/* Right: Cart */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative z-10 text-foreground hover:bg-transparent transition-all duration-300"
+              onClick={() => router.push("/cart")}
+            >
+              <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center font-medium">
+                  {totalItems}
+                </span>
+              )}
+              <span className="sr-only">Cart</span>
             </Button>
           </nav>
 
