@@ -83,6 +83,9 @@ export const StripeCardContainer = ({
 
   const useOptions: StripeCardElementOptions = useMemo(() => {
     return {
+      // The billing postcode is already collected on the address step and
+      // sent with the payment, so don't ask for it again in the card field.
+      hidePostalCode: true,
       style: {
         base: {
           fontFamily: "Inter, sans-serif",
