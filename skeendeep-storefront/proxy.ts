@@ -123,13 +123,16 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // if one of the country codes is in the url and the cache id is not set, set the cache id and redirect
+  // if one of the country codes is in the url and the cache id is not set, set the cache id and carry on.
+  // Redirecting only to set it loops forever wherever the cookie can't be kept (the site shown inside
+  // StoreFactory, browsers that block cookies), so the page renders now and the cookie rides along.
   if (urlHasCountryCode && !cacheIdCookie) {
-    response.cookies.set("_medusa_cache_id", cacheId, {
+    const nextResponse = NextResponse.next()
+    nextResponse.cookies.set("_medusa_cache_id", cacheId, {
       maxAge: 60 * 60 * 24,
     })
 
-    return response
+    return nextResponse
   }
 
   // check if the url is a static asset
@@ -146,6 +149,9 @@ export async function proxy(request: NextRequest) {
   if (!urlHasCountryCode && countryCode) {
     redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
     response = NextResponse.redirect(`${redirectUrl}`, 307)
+    response.cookies.set("_medusa_cache_id", cacheId, {
+      maxAge: 60 * 60 * 24,
+    })
   } else if (!urlHasCountryCode && !countryCode) {
     // Handle case where no valid country code exists (empty regions)
     return new NextResponse(
