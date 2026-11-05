@@ -6,7 +6,7 @@ import { ProductsSection } from "@/components/products-section"
 import { SustainabilitySection } from "@/components/sustainability-section"
 import { CategoriesSection } from "@/components/categories-section"
 import { Footer } from "@/components/footer"
-import { listCollections } from "@/lib/data/collections"
+import { listProducts } from "@/lib/data/products"
 import { getRegion } from "@/lib/data/regions"
 import { client } from "@/lib/sanity/client"
 import { type SanityDocument } from "next-sanity"
@@ -44,9 +44,16 @@ export default async function Home(props: {
   const { countryCode } = params
 
   const region = await getRegion(countryCode)
-  const { collections } = await listCollections({
-    fields: "id, handle, title, products",
-  })
+
+  // The three newest products, for the "Latest from SkeenDeep" section
+  const latestProducts = region
+    ? (
+        await listProducts({
+          queryParams: { limit: 3, order: "-created_at" },
+          regionId: region.id,
+        })
+      ).response.products
+    : []
 
   // Fetch home page content from Sanity
   const homePageData = await client.fetch<SanityDocument>(
@@ -55,7 +62,7 @@ export default async function Home(props: {
     options
   )
 
-  if (!collections || !region) {
+  if (!region) {
     return null
   }
 
@@ -64,7 +71,7 @@ export default async function Home(props: {
       <HeroSection homePageData={homePageData} />
       <MissionStatement homePageData={homePageData} />
       <CustomizeSection homePageData={homePageData} />
-      <ProductsSection collections={collections} region={region} />
+      <ProductsSection products={latestProducts} region={region} />
       <SustainabilitySection homePageData={homePageData} />
       <CategoriesSection homePageData={homePageData} />
     </>
