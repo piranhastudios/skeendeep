@@ -162,7 +162,9 @@ export default async function TestimonialsPage() {
                 Join Today
               </LocalizedClientLink>
               <a 
-                href="#" 
+                href="https://g.page/r/CVX5Fvj4wXB8EAI/review" 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center rounded-full border border-foreground/20 text-foreground hover:bg-foreground hover:text-background px-8 py-3 text-sm font-medium transition-colors"
               >
                 Write a Review
